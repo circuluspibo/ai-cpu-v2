@@ -158,7 +158,7 @@ def getIntro(type):
     elif type == 'assist':
         return INTRO_ASSIST
     else:
-        lang = langid.classify(text=type.replace("\n",""))[0]
+        lang = langid.classify(type.replace("\n",""))[0]
 
         if lang == 'ko':
           type = trans_ko2en(type)
@@ -169,7 +169,7 @@ def process_stream(model, token, instruction="",type="assist", temperature=0.5, 
     # Tokenize the input
     
     if lang == "auto":
-      lang = langid.classify(text=instruction.replace("\n",""))[0]
+      lang = langid.classify(instruction.replace("\n",""))[0]
 
     if lang == 'ko':
       instruction = trans_ko2en(instruction)
@@ -177,7 +177,7 @@ def process_stream(model, token, instruction="",type="assist", temperature=0.5, 
     prompt = f"<|im_start|>system\n{getIntro(type)}</s>\n<|im_start|>user\n{instruction}</s>\n<|im_start|>assistant\n"
 
     if rag is not None and len(rag) > 10:
-      lng = langid.classify(text=instruction.replace("\n",""))[0]
+      lng = langid.classify(instruction.replace("\n",""))[0]
 
       if lng == 'ko':
         rag = trans_ko2en(rag)
@@ -263,7 +263,7 @@ def monitor():
 
 @app.get("/v1/language", summary="어느 언어인지 분석합니다.")
 def language(input : str):
-  return { "result" : True, "data" : langid.classify(text=input.replace("\n",""))[0] }
+  return { "result" : True, "data" : langid.classify(input.replace("\n",""))[0] }
 
 """
 @app.post("/v1/img2chat", summary="이미지 기반의 chatgpt 스타일 구현")
