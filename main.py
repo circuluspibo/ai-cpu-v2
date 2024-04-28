@@ -187,7 +187,7 @@ def process_stream(model, token, instruction="",type="assist", temperature=0.5, 
     print(prompt)
 
     with torch.backends.cuda.sdp_kernel(enable_flash=True, enable_math=False, enable_mem_efficient=False):
-      input_ids = token([prompt], return_tensors="pt").to("cuda")
+      input_ids = token([prompt], return_tensors="pt")
 
       streamer = TextIteratorStreamer(token, timeout=60.0, skip_prompt=True, skip_special_tokens=True)
     
