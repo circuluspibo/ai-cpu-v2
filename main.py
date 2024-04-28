@@ -18,10 +18,10 @@ from threading import Event, Thread
 from optimum.intel.openvino import OVModelForCausalLM
 from transformers import AutoTokenizer, pipeline
 
-model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cuda")
+model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
 token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 
-model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cuda")
+model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
 
