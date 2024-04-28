@@ -1,12 +1,12 @@
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from ftlangdetect import detect
+
 from serverinfo import si
 import torch
 from transformers import AutoTokenizer
 from fastapi.responses import StreamingResponse
-
+import langid
 from huggingface_hub import hf_hub_download
 from transformers import StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer,pipeline
 import ctranslate2
@@ -148,104 +148,18 @@ def getIntro(type):
     elif type == 'assist':
         return INTRO_ASSIST
     else:
-        result = detect(text=type.replace("\n",""), low_memory=False)
-        lang = result['lang']
+        lang = langid.classify(text=type.replace("\n",""))[0]
 
         if lang == 'ko':
           type = trans_ko2en(type)
 
         return type
 
-
-@torch.no_grad() # 보이는 것에 대해 창조적으로 말할 필요가 없음
-def process_stream2(image, instruction="", type='assist', temperature=0.2, top_p=1.0, top_k=0, min_new_tokens=64, max_new_tokens=256, session_id=0, history=[], lang='auto', rag=None):
-
-    if lang == "auto":
-      result = detect(text=instruction, low_memory=False)
-      print(result)
-      lang = result['lang']
-
-    if lang == 'ko':
-      instruction = trans_ko2en(instruction)
-
-    prompt = f"SYSTEM: {getIntro(type)}\nUSER: <image>\n{instruction}\nASSISTANT:"
-
-    if rag is not None and len(rag) > 10:
-      lng = detect(text=rag, low_memory=False)['lang']
-
-      if lng == 'ko':
-        rag = trans_ko2en(rag)
-
-      prompt = f"SYSTEM: {getIntro(type)}  Also refer to bellow context for response. If you don't know, say you don't know.\ncontext\n{rag}\nUSER: <image>\n{instruction}\nASSISTANT:"
-
-    print(prompt)
-
-    with torch.backends.cuda.sdp_kernel(enable_flash=True, enable_math=False, enable_mem_efficient=False):  
-      input_ids = proc_vision(text=prompt, images=image, return_tensors='pt').to("cuda", torch.bfloat16)
-      streamer = TextIteratorStreamer(proc_vision, timeout=60.0, skip_prompt=True, skip_special_tokens=True)
-
-      if temperature < 0.1:
-          temperature = 0.0
-          do_sample = False
-      else:
-          do_sample = True
-
-      generation_kwargs = dict(input_ids, streamer=streamer, use_cache=True, min_new_tokens=min_new_tokens, max_new_tokens=max_new_tokens,
-                              temperature=temperature,do_sample=do_sample, top_p=top_p, top_k=top_k, eos_token_id=token_vision.eos_token_id, pad_token_id=token_vision.pad_token_id)#, prompt_lookup_num_tokens=10) #, stopping_criteria=StoppingCriteriaList([stop]))
-
-      tr = Thread(target=gen_vision.generate, kwargs=generation_kwargs)
-      tr.start()
-
-    if lang == 'en':
-      for new_text in streamer:
-        if new_text.startswith("###") or new_text.startswith("ASSISTANT:") or new_text.startswith("User:") or new_text.startswith("<|user|>"):  #User is stop keyword
-          print("skipped",new_text)
-        else:
-          yield new_text
-    else: # ko
-      sentence = ""
-      for new_text in streamer:
-        if new_text.startswith("###") or new_text.startswith("ASSISTANT:") or new_text.startswith("User:") or new_text.startswith("<|user|>"):  #User is stop keyword
-          print("skipped",new_text)
-        else:
-          if new_text.startswith("###") or new_text.startswith("ASSISTANT:") or new_text.startswith("User:") or new_text.startswith("<|user|>") or new_text.startswith("<|im_start|>assistant"):  #User is stop keyword
-            print("skipped",new_text)
-          else:
-            if new_text.find("\n") > -1:
-              if len(sentence) > 3:
-                result = trans_en2ko(sentence + new_text) #.replace("\n","")
-                print(sentence + new_text ,result)
-                sentence = ""
-                if new_text.find("\n\n") > -1:
-                  yield result + "\n\n" 
-                else:
-                  yield result  + "\n"
-              else:
-                yield new_text
-            elif new_text.find(".") > -1 and len(sentence) > 3:
-              result = trans_en2ko(sentence + new_text)
-              print(sentence + new_text ,result)
-              sentence = ""
-              if new_text.find("\n") > -1:
-                yield result + "\n"
-              elif result.find(".") > -1:
-                yield result + " "
-              else:
-                yield result + ". "
-            else:
-              sentence = sentence + new_text
-
-    if torch.cuda.is_available():
-      torch.cuda.empty_cache()
-      torch.cuda.synchronize()  
-
 def process_stream(model, token, instruction="",type="assist", temperature=0.5, top_p=1.0, top_k=0, min_new_tokens=64, max_new_tokens=256, session_id=0, history=[], lang='auto', rag=None):
     # Tokenize the input
     
     if lang == "auto":
-      result = detect(text=instruction, low_memory=False)
-      print(result)
-      lang = result['lang']
+      lang = langid.classify(text=type.replace("\n",""))[0]
 
     if lang == 'ko':
       instruction = trans_ko2en(instruction)
@@ -253,7 +167,7 @@ def process_stream(model, token, instruction="",type="assist", temperature=0.5, 
     prompt = f"<|im_start|>system\n{getIntro(type)}</s>\n<|im_start|>user\n{instruction}</s>\n<|im_start|>assistant\n"
 
     if rag is not None and len(rag) > 10:
-      lng = detect(text=rag, low_memory=False)['lang']
+      lng = langid.classify(text=type.replace("\n",""))[0]
 
       if lng == 'ko':
         rag = trans_ko2en(rag)
@@ -339,7 +253,8 @@ def monitor():
 
 @app.get("/v1/language", summary="어느 언어인지 분석합니다.")
 def language(input : str):
-  return { "result" : True, "data" : detect(input)['lang'] }
+  return { "result" : True, "data" : langid.classify(text=input.replace("\n",""))[0] }
+
 """
 @app.post("/v1/img2chat", summary="이미지 기반의 chatgpt 스타일 구현")
 def img2chat(file : UploadFile = File(...), prompt="", lang='auto', type="AI Assistant", temp=0.5, top_p=1.0, top_k=0, max=2048): #max=20480): # gen or med
