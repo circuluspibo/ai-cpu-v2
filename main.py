@@ -169,7 +169,7 @@ def process_stream(model, token, instruction="",type="assist", temperature=0.5, 
     # Tokenize the input
     
     if lang == "auto":
-      lang = langid.classify(text=type.replace("\n",""))[0]
+      lang = langid.classify(text=instruction.replace("\n",""))[0]
 
     if lang == 'ko':
       instruction = trans_ko2en(instruction)
@@ -177,7 +177,7 @@ def process_stream(model, token, instruction="",type="assist", temperature=0.5, 
     prompt = f"<|im_start|>system\n{getIntro(type)}</s>\n<|im_start|>user\n{instruction}</s>\n<|im_start|>assistant\n"
 
     if rag is not None and len(rag) > 10:
-      lng = langid.classify(text=type.replace("\n",""))[0]
+      lng = langid.classify(text=instruction.replace("\n",""))[0]
 
       if lng == 'ko':
         rag = trans_ko2en(rag)
