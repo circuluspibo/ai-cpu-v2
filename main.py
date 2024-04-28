@@ -18,7 +18,7 @@ from optimum.intel.openvino import OVModelForCausalLM
 from transformers import AutoTokenizer
 from diffusers import StableDiffusionPipeline, StableDiffusionXLPipeline, AutoPipelineForText2Image, LCMScheduler
 from optimum.intel.openvino import OVLatentConsistencyModelPipeline, OVWeightQuantizationConfig
-
+from pydantic import BaseModel, Field
 
 model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
 token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
@@ -50,21 +50,27 @@ def trans_en2ko(prompt):
   return token_en2ko.decode(token_en2ko.convert_tokens_to_ids(target), skip_special_tokens=True)
 
 
-class Param(BaseModel):
-  prompt : str
-  type = "PL"
+class Param (BaseModel):
+  text : str
+  hash : str = Field(default='')
+  voice : str = Field(default='main') 
+  lang : str = Field(default='ko')
+  type : str = Field(default='mp3')
+  pitch : str = Field(default='medium')
+  rate : str = Field(default='medium')
+  volume : str = Field(default='medium')
 
 class Chat(BaseModel):
   prompt : str
   history : list
-  lang = "auto"
-  type = "AI assist"
-  temp = 0.5
-  top_p = 1.0
-  top_k = 0
-  max = 1024
+  lang : str = Field(default='auto')
+  type : str = Field(default='assist')
+  rag :  str = Field(default='')
+  temp : str = Field(default=0.5)
+  top_p : str = Field(default=1.0)
+  top_k : str = Field(default=0)
+  max : str = Field(default=1024)
 
-to = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 app = FastAPI()
 
