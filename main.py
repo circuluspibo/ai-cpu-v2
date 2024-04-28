@@ -1,14 +1,13 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-
 from serverinfo import si
 import torch
 from transformers import AutoTokenizer
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 import langid
-from huggingface_hub import hf_hub_download
-from transformers import StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer,pipeline
+import random
+from transformers import StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer
 import ctranslate2
 from PIL import Image
 from transformers import AutoTokenizer
@@ -16,7 +15,10 @@ from huggingface_hub import snapshot_download
 import base64
 from threading import Event, Thread
 from optimum.intel.openvino import OVModelForCausalLM
-from transformers import AutoTokenizer, pipeline
+from transformers import AutoTokenizer
+from diffusers import StableDiffusionPipeline, StableDiffusionXLPipeline, AutoPipelineForText2Image, LCMScheduler
+from optimum.intel.openvino import OVLatentConsistencyModelPipeline, OVWeightQuantizationConfig
+
 
 model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
 token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
@@ -24,10 +26,12 @@ token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
-
 text_model = "fakezeta/Phi-3-mini-128k-instruct-ov-int4"
 token_text = AutoTokenizer.from_pretrained(text_model, torch_dtype=torch.float16)
-gen_text = OVModelForCausalLM.from_pretrained(text_model)
+gen_text = OVModelForCausalLM.from_pretrained(text_model, trust_remote_code=True)
+
+model_id = "circulus/canvers-dream-v1.0.0-lcm-ov"
+pipeline = OVLatentConsistencyModelPipeline.from_pretrained(model_id)
 
 #vision_model = "fakezeta/Phi-3-mini-128k-instruct-ov-int4"
 #proc_vision = AutoProcessor.from_pretrained(name_vision, torch_dtype=torch.bfloat16) #AutoProcessor
@@ -268,6 +272,13 @@ def txt2chat(chat : Chat): # gen or med
     out = process_stream(gen_text, token_text, instruction=chat.prompt, type=chat.type, temperature=float(chat.temp), top_p=float(chat.top_p), top_k=float(chat.top_k), max_new_tokens=int(chat.max), history = chat.history, lang=chat.lang, rag=chat.rag)
   
     return StreamingResponse(out)
+
+@app.get("/v1/txt2real", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
+def txt2real(sentence = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
+    print("inference")
+    image = pipeline(sentence + ", high quality, delicated, 8K highres, masterpiece.", num_inference_steps=4, guidance_scale=8.0, height=512, width=512).images[0]
+    image.save("output.png")
+    return "output.png"
 
 @app.post("/v1/ko2en", summary="한국어를 영어로 번역합니다.")
 def ko2en(param : Param):
