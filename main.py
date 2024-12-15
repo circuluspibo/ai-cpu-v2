@@ -61,8 +61,8 @@ pipe_img = ov_genai.Text2ImagePipeline(model_img, device="CPU")
 
 model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
 pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
-
-pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["OpenVINOExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
+#ko_base_f16.onnx / OpenVINOExecutionProvider
+pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
 conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
 
 def trans_ko2en(prompt):
@@ -287,7 +287,7 @@ def tts(text = "", voice = 1, lang='ko', static=0):
     phoneme_ids = torch.LongTensor(phoneme_ids)
     text = np.expand_dims(np.array(phoneme_ids, dtype=np.int64), 0)
     text_lengths = np.array([text.shape[1]], dtype=np.int64)
-    scales = np.array([0.667, 1.0, 0.8], dtype=np.float16)#dtype=np.float16) 16
+    scales = np.array([0.667, 1.0, 0.8], dtype=np.float32)#dtype=np.float16) 16
     sid = np.array([int(voice)], dtype=np.int64) if voice is not None else None
     #sid = np.array([int(voice)]) if voice is not None else None
     audio = pipe_tts.run(None, {"input": text,"input_lengths": text_lengths,"scales": scales,"sid": sid})[0].squeeze((0, 1))
