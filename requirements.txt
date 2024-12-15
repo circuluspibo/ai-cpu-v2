@@ -1,3 +1,4 @@
 openvino
 openvino-genai
 onnxruntime-gpu
+langid
