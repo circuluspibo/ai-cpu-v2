@@ -1,24 +1,50 @@
-from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from serverinfo import si
-import torch
+import librosa
+from fastapi import FastAPI, File, UploadFile
 from transformers import AutoTokenizer
 from fastapi.responses import FileResponse, StreamingResponse
 import langid
 import random
-from transformers import StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer
 import ctranslate2
 from PIL import Image
 from transformers import AutoTokenizer
-from huggingface_hub import snapshot_download
+from huggingface_hub import snapshot_download, hf_hub_download
 import base64
+import time as t
 from threading import Event, Thread
-from optimum.intel.openvino import OVModelForCausalLM
 from transformers import AutoTokenizer
-from diffusers import StableDiffusionPipeline, StableDiffusionXLPipeline, AutoPipelineForText2Image, LCMScheduler
-from optimum.intel.openvino import OVLatentConsistencyModelPipeline, OVWeightQuantizationConfig
 from pydantic import BaseModel, Field
+from iterator import IterableStreamer
+import numpy as np
+import openvino_genai as ov_genai
+import onnxruntime as rt
+import utils
+import commons
+from scipy.io.wavfile import write
+from text import text_to_sequence
+import torch
+
+class Param (BaseModel):
+  text : str
+  hash : str = Field(default='')
+  voice : str = Field(default='main') 
+  lang : str = Field(default='ko')
+  type : str = Field(default='mp3')
+  pitch : str = Field(default='medium')
+  rate : str = Field(default='medium')
+  volume : str = Field(default='medium')
+
+
+class Chat(BaseModel):
+  prompt : str
+  lang : str = "auto"
+  type : str = "똑똑한 20세의 밝은 AI휴먼 데이빗으로, 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
+  temp : float = 0.50
+  top_p : float = 1.0
+  top_k : int = 0
+  max : int = 1024
 
 model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
 token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
@@ -26,16 +52,18 @@ token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
-text_model = "fakezeta/Phi-3-mini-128k-instruct-ov-int4"
-token_text = AutoTokenizer.from_pretrained(text_model, torch_dtype=torch.float16)
-gen_text = OVModelForCausalLM.from_pretrained(text_model, trust_remote_code=True)
+model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
+pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
+tk = AutoTokenizer.from_pretrained(model_txt)
 
-model_id = "circulus/canvers-dream-v1.0.0-lcm-ov"
-pipeline = OVLatentConsistencyModelPipeline.from_pretrained(model_id)
+model_img = snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
+pipe_img = ov_genai.Text2ImagePipeline(model_img, device="CPU")
 
-#vision_model = "fakezeta/Phi-3-mini-128k-instruct-ov-int4"
-#proc_vision = AutoProcessor.from_pretrained(name_vision, torch_dtype=torch.bfloat16) #AutoProcessor
-#gen_vision = AutoModelForVision2Seq.from_pretrained(name_vision, torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2", device_map="auto", quantization_config=bf16_config) # , quantization_config=bf16_config # LlavaForConditionalGeneration
+model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
+pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
+
+pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["OpenVINOExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
+conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
 
 def trans_ko2en(prompt):
   source = token_ko2en.convert_ids_to_tokens(token_ko2en.encode(prompt))
@@ -49,30 +77,18 @@ def trans_en2ko(prompt):
   target = results[0].hypotheses[0]
   return token_en2ko.decode(token_en2ko.convert_tokens_to_ids(target), skip_special_tokens=True)
 
-
-class Param (BaseModel):
-  text : str
-  hash : str = Field(default='')
-  voice : str = Field(default='main') 
-  lang : str = Field(default='ko')
-  type : str = Field(default='mp3')
-  pitch : str = Field(default='medium')
-  rate : str = Field(default='medium')
-  volume : str = Field(default='medium')
-
-class Chat(BaseModel):
-  prompt : str
-  history : list
-  lang : str = Field(default='auto')
-  type : str = Field(default='assist')
-  rag :  str = Field(default='')
-  temp : str = Field(default=0.5)
-  top_p : str = Field(default=1.0)
-  top_k : str = Field(default=0)
-  max : str = Field(default=1024)
-
-
 app = FastAPI()
+
+class Generator(ov_genai.Generator):
+    def __init__(self, seed, mu=0.0, sigma=1.0):
+        ov_genai.Generator.__init__(self)
+        np.random.seed(seed)
+        self.mu = mu
+        self.sigma = sigma
+
+    def next(self):
+        return np.random.normal(self.mu, self.sigma)
+
 
 origins = [
     "http://canvers.net",
@@ -165,93 +181,15 @@ def getIntro(type):
 
         return type
 
-def process_stream(model, token, instruction="",type="assist", temperature=0.5, top_p=1.0, top_k=0, min_new_tokens=64, max_new_tokens=256, session_id=0, history=[], lang='auto', rag=None):
-    # Tokenize the input
-    
-    if lang == "auto":
-      lang = langid.classify(instruction.replace("\n",""))[0]
-
-    if lang == 'ko':
-      instruction = trans_ko2en(instruction)
-
-    prompt = f"<|im_start|>system\n{getIntro(type)}</s>\n<|im_start|>user\n{instruction}</s>\n<|im_start|>assistant\n"
-
-    if rag is not None and len(rag) > 10:
-      lng = langid.classify(instruction.replace("\n",""))[0]
-
-      if lng == 'ko':
-        rag = trans_ko2en(rag)
-
-      prompt = f"<|im_start|>system\n{getIntro(type)} Also refer to bellow context for response. If you don't know, say you don't know.\ncontext\n{rag}</s>\n<|im_start|>user\n{instruction}</s>\n<|im_start|>assistant\n"
-
-    print(prompt)
-
-    with torch.backends.cuda.sdp_kernel(enable_flash=True, enable_math=False, enable_mem_efficient=False):
-      input_ids = token([prompt], return_tensors="pt")
-
-      streamer = TextIteratorStreamer(token, timeout=60.0, skip_prompt=True, skip_special_tokens=True)
-    
-      if temperature < 0.1:
-          temperature = 0.0
-          do_sample = False
-      else:
-          do_sample = True
-
-      generation_kwargs = dict(input_ids, streamer=streamer, min_new_tokens=min_new_tokens, max_new_tokens=max_new_tokens,
-                              temperature=temperature,do_sample=do_sample,use_cache=True, top_p=top_p, top_k=top_k, eos_token_id=token.eos_token_id, pad_token_id=token.pad_token_id)#, prompt_lookup_num_tokens=10) #, stopping_criteria=StoppingCriteriaList([stop]))
-
-      tr = Thread(target=model.generate, kwargs=generation_kwargs)
-      tr.start()
-
-    isCode = False # python javascript comment convert needs
-
-    if lang == 'en':
-      for new_text in streamer:
-        if new_text.startswith("###") or new_text.startswith("Assistant:") or new_text.startswith("User:") or new_text.startswith("<|user|>") or new_text.startswith("<|im_start|>assistant"):  #User is stop keyword
-          print("skipped",new_text)
-        else:
-          yield new_text
-    else: # ko
-      sentence = ""
-      for new_text in streamer:
-        if new_text.startswith("###") or new_text.startswith("Assistant:") or new_text.startswith("User:") or new_text.startswith("<|user|>") or new_text.startswith("<|im_start|>assistant") or new_text.startswith('<|im_end|>'):  #User is stop keyword
-          print("skipped",new_text)
-        else:
-          if isCode == True:
-            if '```' in new_text:
-              isCode = False
-            yield new_text
-          elif new_text.find("\n") > -1 and isCode == False:
-            if '```' in new_text:
-              print(sentence, new_text)
-              isCode = True
-              yield "\n" + new_text
-            elif len(sentence) > 3:
-              result = trans_en2ko(sentence + new_text) #.replace("\n","")
-              print(sentence + new_text ,result)
-              sentence = ""
-              if new_text.find("\n\n") > -1:
-                yield result + "\n\n" 
-              else:
-                yield result  + "\n"
-            else:
-              yield new_text
-          elif new_text.find(".") > -1 and len(sentence) > 3:
-            result = trans_en2ko(sentence + new_text)
-            print(sentence + new_text ,result)
-            sentence = ""
-            if new_text.find("\n") > -1:
-              yield result + "\n"
-            elif result.find(".") > -1:
-              yield result + " "
-            else:
-              yield result + ". "
-          else:
-            sentence = sentence + new_text
-
-    if torch.cuda.is_available():
-      torch.cuda.empty_cache()
-      torch.cuda.synchronize()
+def process_stream(streamer, lang):
+  #sentence = ""
+  print("streaming start...")
+  for new_text in streamer:
+    print(new_text, end="", flush=True)
+    if new_text.startswith("###") or new_text.startswith("Assistant:") or new_text.startswith("User:") or new_text.startswith("<|user|>") or new_text.startswith("<|im_start|>assistant"):  #User is stop keyword
+      print("skipped",new_text)
+    else:
+      yield new_text
 
 @app.get("/")
 def main():
@@ -265,26 +203,103 @@ def monitor():
 def language(input : str):
   return { "result" : True, "data" : langid.classify(input.replace("\n",""))[0] }
 
-"""
-@app.post("/v1/img2chat", summary="이미지 기반의 chatgpt 스타일 구현")
-def img2chat(file : UploadFile = File(...), prompt="", lang='auto', type="AI Assistant", temp=0.5, top_p=1.0, top_k=0, max=2048): #max=20480): # gen or med
-    image = Image.open(file.file).convert('RGB')  
-    out = process_stream2(image, instruction=prompt, type=type, temperature=float(temp), top_p=float(top_p), top_k=float(top_k), max_new_tokens=int(max), lang=lang, rag=rag)
-    return StreamingResponse(out)
-"""
-
 @app.post("/v1/txt2chat", summary="문장 기반의 chatgpt 스타일 구현")
 def txt2chat(chat : Chat): # gen or med
-    out = process_stream(gen_text, token_text, instruction=chat.prompt, type=chat.type, temperature=float(chat.temp), top_p=float(chat.top_p), top_k=float(chat.top_k), max_new_tokens=int(chat.max), history = chat.history, lang=chat.lang, rag=chat.rag)
-  
-    return StreamingResponse(out)
+  token = pipe_txt.get_tokenizer()
+  streamer = IterableStreamer(token, prompt = chat.prompt)
 
-@app.get("/v1/txt2real", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
-def txt2real(sentence = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
-    print("inference")
-    image = pipeline(sentence + ", high quality, delicated, 8K highres, masterpiece.", num_inference_steps=4, guidance_scale=8.0, height=512, width=512).images[0]
+  messages = [
+    #"role": "system", "content": chat.type},
+    {"role": "user", "content": chat.type + "\n" + chat.prompt}
+  ] 
+  prompt = tk.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True
+  )
+
+  print(prompt)
+
+  generate_kwargs = dict(
+      inputs = prompt,
+      max_new_tokens=int(chat.max),
+      temperature=float(chat.temp),
+      do_sample=True,
+      repetition_penalty=1.1,
+      top_k=50,
+      top_p=0.92,
+      #top_p=float(chat.top_p),
+      #top_k=int(chat.top_k),
+      streamer=streamer, # !do_sample || top_k > 0
+  )
+
+  t1 = Thread(target=pipe_txt.generate, kwargs=generate_kwargs)
+  t1.start()
+
+  out = process_stream(streamer, lang="auto")
+  return StreamingResponse(out, media_type='text/event-stream')
+
+@app.get("/v1/txt2img", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
+def txt2real(prompt = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
+    start = t.time()
+    prompt = prompt +", high quality, delicated, 8K highres, masterpiece."
+    image_tensor = pipe_img.generate(prompt, num_inference_steps=int(steps), guidance_scale=float(scale), height=int(w), width=int(h),num_images_per_prompt=1,generator=Generator(int(seed)))
+    print(t.time()-start)
+    image = Image.fromarray(image_tensor.data[0])
     image.save("output.png")
     return "output.png"
+
+@app.post("/v1/stt", summary="오디오를 인식합니다.")
+def stt(file : UploadFile = File(...), lang="ko"):
+  start = t.time()
+  location = f"uploads/{file.filename}"
+
+  with open(location,"wb+") as file_object:
+    file_object.write(file.file.read())
+  
+  raw_speech, samplerate = librosa.load(location, sr=16000)
+  print('length',librosa.get_duration(y=raw_speech, sr=samplerate))
+  raw =  raw_speech.tolist()
+
+  out = pipe_stt.generate(
+    raw,
+    max_new_tokens=100,
+    # 'task' and 'language' parameters are supported for multilingual models only
+    language=f"<|{lang}|>",
+    task="transcribe",
+    #return_timestamps=True
+    #streamer=streamer,
+  )
+
+  print(t.time()-start)
+
+  return { "result" : True, "data" : str(out) }
+
+@app.get("/v1/tts", response_class=FileResponse, summary="입력한 문장으로 부터 음성을 생성합니다.")
+def tts(text = "", voice = 1, lang='ko', static=0):
+    #org_text = parse.quote(text, safe='', encoding="cp949")
+    start = t.time()
+    print(text, static)
+
+    phoneme_ids = text_to_sequence(text, conf_tts.data.text_cleaners)
+    if conf_tts.data.add_blank:
+        phoneme_ids = commons.intersperse(phoneme_ids, 0)
+    phoneme_ids = torch.LongTensor(phoneme_ids)
+    text = np.expand_dims(np.array(phoneme_ids, dtype=np.int64), 0)
+    text_lengths = np.array([text.shape[1]], dtype=np.int64)
+    scales = np.array([0.667, 1.0, 0.8], dtype=np.float16)#dtype=np.float16) 16
+    sid = np.array([int(voice)], dtype=np.int64) if voice is not None else None
+    #sid = np.array([int(voice)]) if voice is not None else None
+    audio = pipe_tts.run(None, {"input": text,"input_lengths": text_lengths,"scales": scales,"sid": sid})[0].squeeze((0, 1))
+    #print(audio)
+    print(t.time() - start)
+    
+    if int(static) > 0:
+      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"human.wav")
+      return f"human.wav"
+    else:
+      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"{str(start)}.wav")
+      return f"{str(start)}.wav"
 
 @app.post("/v1/ko2en", summary="한국어를 영어로 번역합니다.")
 def ko2en(param : Param):
