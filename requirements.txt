@@ -1,5 +1,6 @@
 openvino
 openvino-genai
-onnxruntime-gpu
+#onnxruntime-gpu
+onnxruntime
 langid
 ctranslate2

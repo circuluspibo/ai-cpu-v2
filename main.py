@@ -62,8 +62,8 @@ pipe_img = ov_genai.Text2ImagePipeline(model_img, device="CPU")
 model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
 pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
 #ko_base_f16.onnx / OpenVINOExecutionProvider
-#pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
-#conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
+pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
+conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
 
 def trans_ko2en(prompt):
   source = token_ko2en.convert_ids_to_tokens(token_ko2en.encode(prompt))
