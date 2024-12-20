@@ -56,13 +56,13 @@ model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
 pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
 tk =  AutoTokenizer.from_pretrained(model_txt)
 
-model_real = snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
+model_real = snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
 pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
 
-model_story = snapshot_download(repo_id="rippertnt/on-canvers-story-ov-int8-v3.9.1")
+model_story = snapshot_download(repo_id="circulus/on-canvers-story-v3.9.1-int8")
 pipe_story = ov_genai.Text2ImagePipeline(model_story, device="CPU")
 
-model_disney = snapshot_download(repo_id="rippertnt/on-canvers-disney-ov-int8-v3.9.1")
+model_disney = snapshot_download(repo_id="circulus/on-canvers-disney-v3.9.1-int8")
 pipe_disney = ov_genai.Text2ImagePipeline(model_disney, device="CPU")
 
 model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
