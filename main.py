@@ -46,11 +46,11 @@ class Chat(BaseModel):
   top_k : int = 0
   max : int = 1024
 
-model_en2ko #= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
-token_en2ko #= AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
+model_en2ko = None#= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
+token_en2ko = None #= AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 
-model_ko2en #= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
-token_ko2en #= AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
+model_ko2en = None #= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
+token_ko2en = None #= AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
 model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
 pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
@@ -59,8 +59,8 @@ tk = AutoTokenizer.from_pretrained(model_txt)
 model_img = snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
 pipe_img = ov_genai.Text2ImagePipeline(model_img, device="CPU")
 
-model_stt #= snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
-pipe_stt #= ov_genai.WhisperPipeline(model_stt,device="CPU")
+model_stt = None #= snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
+pipe_stt = None #= ov_genai.WhisperPipeline(model_stt,device="CPU")
 #ko_base_f16.onnx / OpenVINOExecutionProvider
 pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
 conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
