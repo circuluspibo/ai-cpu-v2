@@ -4,3 +4,8 @@ openvino-genai
 onnxruntime
 langid
 ctranslate2
+uvicorn
+librosa
+epitran
+num2words
+g2pk2
