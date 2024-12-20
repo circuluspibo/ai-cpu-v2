@@ -52,9 +52,9 @@ token_en2ko = None #= AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 model_ko2en = None #= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
 token_ko2en = None #= AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
-model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
-pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
-tk = AutoTokenizer.from_pretrained(model_txt)
+model_txt = None #snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
+pipe_txt = None #ov_genai.LLMPipeline(model_txt, "CPU")
+tk = None # AutoTokenizer.from_pretrained(model_txt)
 
 model_img = snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
 pipe_img = ov_genai.Text2ImagePipeline(model_img, device="CPU")
