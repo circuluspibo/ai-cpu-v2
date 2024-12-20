@@ -46,21 +46,27 @@ class Chat(BaseModel):
   top_k : int = 0
   max : int = 1024
 
-model_en2ko = None#= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
-token_en2ko = None #= AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
+model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
+token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 
-model_ko2en = None #= ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
-token_ko2en = None #= AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
+model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
+token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
-model_txt = None #snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
-pipe_txt = None #ov_genai.LLMPipeline(model_txt, "CPU")
-tk = None # AutoTokenizer.from_pretrained(model_txt)
+model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
+pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
+tk =  AutoTokenizer.from_pretrained(model_txt)
 
-model_img = None #= snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
-pipe_img = None #= ov_genai.Text2ImagePipeline(model_img, device="CPU")
+model_real = snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
+pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
 
-model_stt = None #= snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
-pipe_stt = None #= ov_genai.WhisperPipeline(model_stt,device="CPU")
+model_story = snapshot_download(repo_id="rippertnt/on-canvers-story-ov-int8-v3.9.1")
+pipe_story = ov_genai.Text2ImagePipeline(model_story, device="CPU")
+
+model_disney = snapshot_download(repo_id="rippertnt/on-canvers-disney-ov-int8-v3.9.1")
+pipe_disney = ov_genai.Text2ImagePipeline(model_disney, device="CPU")
+
+model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
+pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
 #ko_base_f16.onnx / OpenVINOExecutionProvider
 pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
 conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
@@ -239,15 +245,35 @@ def txt2chat(chat : Chat): # gen or med
   out = process_stream(streamer, lang="auto")
   return StreamingResponse(out, media_type='text/event-stream')
 
-@app.get("/v1/txt2img", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
+@app.get("/v1/txt2real", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
 def txt2real(prompt = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
     start = t.time()
     prompt = prompt +", high quality, delicated, 8K highres, masterpiece."
-    image_tensor = pipe_img.generate(prompt, num_inference_steps=int(steps), guidance_scale=float(scale), height=int(w), width=int(h),num_images_per_prompt=1,generator=Generator(int(seed)))
+    image_tensor = pipe_real.generate(prompt, num_inference_steps=int(steps), guidance_scale=float(scale), height=int(w), width=int(h),num_images_per_prompt=1,generator=Generator(int(seed)))
     print(t.time()-start)
     image = Image.fromarray(image_tensor.data[0])
-    image.save("output.png")
-    return "output.png"
+    image.save(f"{start}.png")
+    return f"{start}.png"
+
+@app.get("/v1/txt2disney", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
+def txt2disney(prompt = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
+    start = t.time()
+    prompt = prompt +", high quality, delicated, 8K highres, masterpiece."
+    image_tensor = pipe_disney.generate(prompt, num_inference_steps=int(steps), guidance_scale=float(scale), height=int(w), width=int(h),num_images_per_prompt=1,generator=Generator(int(seed)))
+    print(t.time()-start)
+    image = Image.fromarray(image_tensor.data[0])
+    image.save(f"{start}.png")
+    return f"{start}.png"
+
+@app.get("/v1/txt2story", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
+def txt2story(prompt = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
+    start = t.time()
+    prompt = prompt +", high quality, delicated, 8K highres, masterpiece."
+    image_tensor = pipe_story.generate(prompt, num_inference_steps=int(steps), guidance_scale=float(scale), height=int(w), width=int(h),num_images_per_prompt=1,generator=Generator(int(seed)))
+    print(t.time()-start)
+    image = Image.fromarray(image_tensor.data[0])
+    image.save(f"{start}.png")
+    return f"{start}.png"
 
 @app.post("/v1/stt", summary="오디오를 인식합니다.")
 def stt(file : UploadFile = File(...), lang="ko"):
