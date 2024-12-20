@@ -56,8 +56,8 @@ model_txt = None #snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
 pipe_txt = None #ov_genai.LLMPipeline(model_txt, "CPU")
 tk = None # AutoTokenizer.from_pretrained(model_txt)
 
-model_img = snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
-pipe_img = ov_genai.Text2ImagePipeline(model_img, device="CPU")
+model_img = None #= snapshot_download(repo_id="rippertnt/on-canvers-real-ov-int8-v3.9.1")
+pipe_img = None #= ov_genai.Text2ImagePipeline(model_img, device="CPU")
 
 model_stt = None #= snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
 pipe_stt = None #= ov_genai.WhisperPipeline(model_stt,device="CPU")
