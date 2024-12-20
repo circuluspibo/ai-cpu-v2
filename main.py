@@ -23,7 +23,7 @@ import onnxruntime as rt
 import utils
 import commons
 from scipy.io.wavfile import write
-#from text import text_to_sequence
+from text import text_to_sequence
 import torch
 
 class Param (BaseModel):
