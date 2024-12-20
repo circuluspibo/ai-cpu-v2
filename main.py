@@ -275,7 +275,6 @@ def stt(file : UploadFile = File(...), lang="ko"):
 
   return { "result" : True, "data" : str(out) }
 
-"""
 @app.get("/v1/tts", response_class=FileResponse, summary="입력한 문장으로 부터 음성을 생성합니다.")
 def tts(text = "", voice = 1, lang='ko', static=0):
     #org_text = parse.quote(text, safe='', encoding="cp949")
@@ -301,7 +300,6 @@ def tts(text = "", voice = 1, lang='ko', static=0):
     else:
       write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"{str(start)}.wav")
       return f"{str(start)}.wav"
-"""
 
 @app.post("/v1/ko2en", summary="한국어를 영어로 번역합니다.")
 def ko2en(param : Param):
