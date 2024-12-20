@@ -9,3 +9,10 @@ librosa
 epitran
 num2words
 g2pk2
+uvicorn
+fastapi
+pydantic
+serverinfo
+transformers
+pillow
+torch
