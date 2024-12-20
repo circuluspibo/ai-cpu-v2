@@ -1,7 +1,7 @@
 openvino
 openvino-genai
 #onnxruntime-gpu
-onnxruntime
+#onnxruntime
 langid
 ctranslate2
 uvicorn
@@ -16,3 +16,7 @@ serverinfo
 transformers
 pillow
 torch
+pykakasi
+eng-to-ipa
+cn2an
+unidecode
