@@ -20,3 +20,4 @@ pykakasi
 eng-to-ipa
 cn2an
 unidecode
+python-multipart
