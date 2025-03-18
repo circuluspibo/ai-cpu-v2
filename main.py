@@ -28,6 +28,7 @@ from text import text_to_sequence
 import torch
 from serverinfo import si
 import onnxruntime_genai as og
+from llama_cpp import Llama
 import asyncio
 
 _IP = si.getIP()
@@ -64,14 +65,8 @@ token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 #pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
 #tk =  AutoTokenizer.from_pretrained(model_txt)
 
-
-model_path = snapshot_download(repo_id="circulus/phi-4-mini-int4-onnx-cpu")
-token_txt = AutoTokenizer.from_pretrained(model_path,trust_remote_code=True)
-#config.clear_providers()
-#config.append_provider("cpu")
-model_txt = og.Model(model_path)
-tokenizer = og.Tokenizer(model_txt)
-tokenizer_stream = tokenizer.create_stream()
+model_txt = Llama.from_pretrained(repo_id="unsloth/gemma-3-1b-it-GGUF", filename="gemma-3-1b-it-Q4_K_M.gguf", n_threads=4, verbose=False)
+token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-1b-it")
 
 model_real = snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
 pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
@@ -85,7 +80,7 @@ pipe_disney = ov_genai.Text2ImagePipeline(model_disney, device="CPU")
 model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
 pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
 #ko_base_f16.onnx / OpenVINOExecutionProvider
-pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
+pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
 conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
 
 def trans_ko2en(prompt):
@@ -112,6 +107,36 @@ class Generator(ov_genai.Generator):
     def next(self):
         return np.random.normal(self.mu, self.sigma)
 
+async def generate_text_stream(chat : Chat, isStream=True):
+    
+    if len(chat.rag) > 3:
+      chat.prompt = "<content>\n" + chat.rag + "\n\n" + chat.prompt
+
+    prompt = token_txt.apply_chat_template([
+        {"role": "system", "content": chat.type},
+        {"role": "user", "content": chat.prompt}
+      ], tokenize=False,add_generation_prompt=True)
+	
+    response = model_txt.create_completion(prompt, max_tokens=chat.max, temperature=chat.temp, top_k=chat.top_k,top_p=chat.top_p,repeat_penalty=1.1, stream=True)
+    sentence = ""
+    for chunk in response:
+        if "choices" in chunk and chunk["choices"]:
+            new_token =  chunk["choices"][0]["text"]
+            if isStream:
+              print(new_token)
+              yield new_token
+              await asyncio.sleep(0) 
+            elif "." in new_token or "\n" in new_token:
+              sentence = sentence + new_token
+              if len(sentence) > 3:
+                print(sentence)
+                yield sentence
+                await asyncio.sleep(0) 
+                sentence = ""
+            else:
+              sentence = sentence + new_token
+
+        #await asyncio.sleep(0.01)  # 비동기 처리를 위한 작은 딜레이
 
 origins = [
     "http://canvers.net",
@@ -131,41 +156,24 @@ app.add_middleware(
 def stream_en2ko(prompts):
   prompts = prompts.split('\n') #[:-1] for xgen patch
   print(prompts)
-  #prompts = prompts.split('\n')
   length = len(prompts)
   for idx, prompt in enumerate(prompts):
     if len(prompt) > 1:
       result = trans_en2ko(prompt)
-      #output = pipe_en2ko(prompt, num_return_sequences=1, max_length=1024)[0]
-      #result = output['generated_text']
-#      print(idx, length)      
-#      print(result)
-
       if idx < length - 1:
         yield result + "</br>"
       else:
         yield result
     elif idx < length - 1:
       yield "</br>"      
-#      yield result + "</br>"
-#    else:
-#      yield "</br>"      
-
 
 def stream_ko2en(prompts):
   prompts = prompts.split('\n') #[:-1] for xgen
   length = len(prompts)
 
-
   for idx, prompt in enumerate(prompts):
     if len(prompt) > 1:
       result = trans_ko2en(prompt)
-      #output = pipe_ko2en(prompt, num_return_sequences=1, max_length=1024)[0]
-#      print(output)
-      #result = output['generated_text']
-#      print(result)
-#      print(idx, length)
-      #yield result + "</br>"
 
       if idx < length - 1:
         yield result + "</br>"
@@ -228,12 +236,12 @@ def monitor():
 @app.post("/v1/txt2chat", summary="문장 기반의 chatgpt 스타일 구현 / batch ")
 def txt2chat(chat : Chat): # gen or med
   print(chat)
-  return StreamingResponse(stream_response(chat, False), media_type="text/plain")
+  return StreamingResponse(generate_text_stream(chat, False), media_type="text/plain")
 
 @app.post("/v2/txt2chat", summary="문장 기반의 chatgpt 스타일 구현 / stream")
 def txt2chat2(chat : Chat): # gen or med
   print(chat)
-  return StreamingResponse(stream_response(chat, True), media_type="text/plain")
+  return StreamingResponse(generate_text_stream(chat, True), media_type="text/plain")
 
 
 @app.get("/")
@@ -247,42 +255,6 @@ def monitor():
 @app.get("/v1/language", summary="어느 언어인지 분석합니다.")
 def language(input : str):
   return { "result" : True, "data" : langid.classify(input.replace("\n",""))[0] }
-
-@app.post("/v1/txt2chat", summary="문장 기반의 chatgpt 스타일 구현")
-def txt2chat(chat : Chat): # gen or med
-  token = pipe_txt.get_tokenizer()
-  streamer = IterableStreamer(token, prompt = chat.prompt)
-
-  messages = [
-    #"role": "system", "content": chat.type},
-    {"role": "user", "content": chat.type + "\n" + chat.prompt}
-  ] 
-  prompt = tk.apply_chat_template(
-    messages,
-    tokenize=False,
-    add_generation_prompt=True
-  )
-
-  print(prompt)
-
-  generate_kwargs = dict(
-      inputs = prompt,
-      max_new_tokens=int(chat.max),
-      temperature=float(chat.temp),
-      do_sample=True,
-      repetition_penalty=1.1,
-      top_k=50,
-      top_p=0.92,
-      #top_p=float(chat.top_p),
-      #top_k=int(chat.top_k),
-      streamer=streamer, # !do_sample || top_k > 0
-  )
-
-  t1 = Thread(target=pipe_txt.generate, kwargs=generate_kwargs)
-  t1.start()
-
-  out = process_stream(streamer, lang="auto")
-  return StreamingResponse(out, media_type='text/event-stream')
 
 @app.get("/v1/txt2real", response_class=FileResponse, summary="입력한 문장으로 부터 이미지를 생성합니다.")
 def txt2real(prompt = "", positive = "", negative = "", w=512, h=896, steps=4, scale=8.0, lang='auto',upscale=0, enhance=1, seed=random.randint(-2147483648, 2147483647), nsfw=1):
@@ -314,7 +286,7 @@ def txt2story(prompt = "", positive = "", negative = "", w=512, h=896, steps=4, 
     image.save(f"{start}.png")
     return f"{start}.png"
 
-@app.post("/v1/stt", summary="오디오를 인식합니다.")
+@app.post("/v1/stt", summary="음성을 인식합니다.")
 def stt(file : UploadFile = File(...), lang="ko"):
   start = t.time()
   location = f"uploads/{file.filename}"
@@ -352,7 +324,7 @@ def tts(text = "", voice = 1, lang='ko', static=0):
     phoneme_ids = torch.LongTensor(phoneme_ids)
     text = np.expand_dims(np.array(phoneme_ids, dtype=np.int64), 0)
     text_lengths = np.array([text.shape[1]], dtype=np.int64)
-    scales = np.array([0.667, 1.0, 0.8], dtype=np.float32)#dtype=np.float16) 16
+    scales = np.array([0.667, 1.0, 0.8], dtype=np.float16)#dtype=np.float16) 16
     sid = np.array([int(voice)], dtype=np.int64) if voice is not None else None
     #sid = np.array([int(voice)]) if voice is not None else None
     audio = pipe_tts.run(None, {"input": text,"input_lengths": text_lengths,"scales": scales,"sid": sid})[0].squeeze((0, 1))
