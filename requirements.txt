@@ -1,5 +1,5 @@
 openvino
-openvino-genai
+openvino_genai
 #onnxruntime-gpu
 #onnxruntime
 langid
