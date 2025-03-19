@@ -233,7 +233,7 @@ async def stream_response(chat, isStream=True):
 
 @app.get("/")
 def main():
-  return { "result" : True, "data" : "THEMAKER-NAPI V1", "ip" : _IP }      
+  return { "result" : True, "data" : "AI-CPU-V2", "ip" : _IP }      
 
 @app.get("/monitor")
 def monitor():
