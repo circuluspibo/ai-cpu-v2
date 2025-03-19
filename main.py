@@ -47,12 +47,12 @@ class Param (BaseModel):
 class Chat(BaseModel):
   prompt : str
   lang : str = 'auto'
-  type : str = "당신은 서큘러스에서 만든 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 젊은 톤의 대화체로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
+  type : str =  "당신은 서큘러스에서 만든 데이빗라고 하는 10살 남자아이 성향의 유쾌한 다국어 인공지능 입니다. 젊은 톤의 대화체로 입력된 언어로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
   rag :  str = ''  
   temp : float = 0.5
-  top_p : float = 1.0
-  top_k : int = 1
-  max : int = 2048
+  top_p : float = 0.92
+  top_k : int = 50
+  max : int = 16384
 
 
 model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
@@ -61,7 +61,8 @@ token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
-#model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4")
+#from huggingface_hub import snapshot_download
+#model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4", filename="gemma-3-1b-it-Q4_K_M.gguf")
 #pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
 #tk =  AutoTokenizer.from_pretrained(model_txt)
 
@@ -129,20 +130,21 @@ async def generate_text_stream(chat : Chat, isStream=True):
         if "choices" in chunk and chunk["choices"]:
             new_token =  chunk["choices"][0]["text"]
             if isStream:
-              print(new_token)
+              #print(new_token)
               yield new_token
               await asyncio.sleep(0) 
             elif "." in new_token or "\n" in new_token:
               sentence = sentence + new_token
               if len(sentence) > 3:
-                sentence = sentence.trim()
-                print(sentence)
+                sentence = sentence.strip()
+                #print(sentence)
                 yield sentence
                 await asyncio.sleep(0) 
                 sentence = ""
             else:
               sentence = sentence + new_token
-
+    if len(sentence) > 3:
+       yield sentence
         #await asyncio.sleep(0.01)  # 비동기 처리를 위한 작은 딜레이
 
 origins = [
