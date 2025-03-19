@@ -66,7 +66,11 @@ token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 #tk =  AutoTokenizer.from_pretrained(model_txt)
 
 model_txt = Llama.from_pretrained(repo_id="unsloth/gemma-3-1b-it-GGUF", filename="gemma-3-1b-it-Q4_K_M.gguf", n_threads=4, verbose=False)
+# unsloth/gemma-3-1b-it-GGUF
+# gemma-3-1b-it-Q4_K_M.gguf
 token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-1b-it")
+
+# n_gpu_layers=-1,
 
 model_real = snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
 pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
@@ -129,6 +133,7 @@ async def generate_text_stream(chat : Chat, isStream=True):
             elif "." in new_token or "\n" in new_token:
               sentence = sentence + new_token
               if len(sentence) > 3:
+                sentence = sentence.trim()
                 print(sentence)
                 yield sentence
                 await asyncio.sleep(0) 
