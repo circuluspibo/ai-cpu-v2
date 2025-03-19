@@ -113,13 +113,15 @@ class Generator(ov_genai.Generator):
 
 async def generate_text_stream(chat : Chat, isStream=True):
     
-    if len(chat.rag) > 3:
-      chat.prompt = "<content>\n" + chat.rag + "\n\n" + chat.prompt
+    #if len(chat.rag) > 3:
+    #  chat.prompt = "<content>\n" + chat.rag + "\n\n" + chat.prompt
+    if chat.rag is not None and len(chat.rag) > 10: 
+      chat.type=  f"{chat.type} 그리고, 다음 내용을 참고하여 대답을 하되 잘 모르는 내용이면 모른다고 솔직하게 대답하세요.\n<|context|>\n{chat.rag}"    
 
     prompt = token_txt.apply_chat_template([
-        {"role": "system", "content": chat.type},
-        {"role": "user", "content": chat.prompt}
-      ], tokenize=False,add_generation_prompt=True)
+      {"role": "system", "content": chat.type},
+      {"role": "user", "content": chat.prompt}
+    ], tokenize=False,add_generation_prompt=True)
 	
     response = model_txt.create_completion(prompt, max_tokens=chat.max, temperature=chat.temp, top_k=chat.top_k,top_p=chat.top_p,repeat_penalty=1.1, stream=True)
     sentence = ""
