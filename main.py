@@ -32,6 +32,7 @@ from llama_cpp import Llama
 import asyncio
 
 _IP = si.getIP()
+_PORT = int(open("port.txt", 'r').read())
 
 class Param (BaseModel):
   text : str
@@ -47,7 +48,7 @@ class Param (BaseModel):
 class Chat(BaseModel):
   prompt : str
   lang : str = 'auto'
-  type : str =  "당신은 서큘러스에서 만든 데이빗라고 하는 10살 남자아이 성향의 유쾌한 다국어 인공지능 입니다. 젊은 톤의 대화체로 입력된 언어로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
+  type : str =  "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 다국어 인공지능 입니다. 젊은 톤의 대화체로 입력된 언어로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
   rag :  str = ''  
   temp : float = 0.5
   top_p : float = 0.92
@@ -235,7 +236,7 @@ async def stream_response(chat, isStream=True):
 
 @app.get("/")
 def main():
-  return { "result" : True, "data" : "AI-CPU-V2", "ip" : _IP }      
+  return { "result" : True, "data" : "AI-CPU-V2", "ip" : _IP, "port" : _PORT }      
 
 @app.get("/monitor")
 def monitor():
