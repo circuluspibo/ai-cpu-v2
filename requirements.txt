@@ -1,5 +1,5 @@
 openvino
-openvino-genai
+openvino_genai
 #onnxruntime-gpu
 #onnxruntime
 langid
@@ -20,3 +20,4 @@ pykakasi
 eng-to-ipa
 cn2an
 unidecode
+python-multipart
