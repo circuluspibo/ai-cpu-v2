@@ -341,11 +341,11 @@ def tts(text = "", voice = 1, lang='ko', static=0):
     print(t.time() - start)
     
     if int(static) > 0:
-      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"human.wav")
-      return f"human.wav"
+      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename="output/human.wav")
+      return "output/human.wav"
     else:
-      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"{str(start)}.wav")
-      return f"{str(start)}.wav"
+      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"output/{str(start)}.wav")
+      return f"output/{str(start)}.wav"
 
 @app.post("/v1/ko2en", summary="한국어를 영어로 번역합니다.")
 def ko2en(param : Param):
