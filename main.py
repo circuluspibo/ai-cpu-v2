@@ -48,7 +48,7 @@ class Param (BaseModel):
 class Chat(BaseModel):
   prompt : str
   lang : str = 'auto'
-  type : str =  "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 다국어 인공지능 입니다. 젊은 톤의 대화체로 입력된 언어로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
+  type : str = "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 다국어 인공지능 입니다. 젊은 톤의 대화체로 입력된 언어로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
   rag :  str = ''  
   temp : float = 0.5
   top_p : float = 0.92
@@ -67,13 +67,18 @@ token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 #pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
 #tk =  AutoTokenizer.from_pretrained(model_txt)
 
+
+#model_txt = Llama.from_pretrained(repo_id="bartowski/google_gemma-3-4b-it-qat-GGUF", filename="google_gemma-3-4b-it-qat-Q4_K_M.gguf", n_threads=4, verbose=False)
+#token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-4b-it")
+
 model_txt = Llama.from_pretrained(repo_id="unsloth/gemma-3-1b-it-GGUF", filename="gemma-3-1b-it-Q4_K_M.gguf", n_threads=4, verbose=False)
-# unsloth/gemma-3-1b-it-GGUF
-# gemma-3-1b-it-Q4_K_M.gguf
 token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-1b-it")
 
-# n_gpu_layers=-1,
+#model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
+#token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
 
+# n_gpu_layers=-1,
+11
 model_real = snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
 pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
 
@@ -138,7 +143,7 @@ async def generate_text_stream(chat : Chat, isStream=True):
               sentence = sentence + new_token
               if len(sentence) > 3:
                 sentence = sentence.strip()
-                #print(sentence)
+                print(sentence)
                 yield sentence
                 await asyncio.sleep(0) 
                 sentence = ""
