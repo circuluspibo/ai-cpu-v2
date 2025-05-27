@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body {
+        overflow-y: overlay; /* 반드시 overlay 처리 */
+        width : 100%;
+        height : 100%;
+        margin : 0;
+        padding : 0;
+      }
+
+      .view {
+        margin : 0;
+        padding : 0;
+        float : left;
+      }
+
+      #main {
+        width : 80%;
+        height: 100%;
+      }
+
+      #assist {
+        width : 20%;
+        height: 100%;
+      }
+
+      ::-webkit-scrollbar {
+          width: 14px;
+          height: 14px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+          outline: none;
+          border-radius: 10px;
+          border: 4px solid transparent;
+          box-shadow: inset 6px 6px 0 rgba(34, 34, 34, 0.15);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+          border: 4px solid transparent;
+          box-shadow: inset 6px 6px 0 rgba(34, 34, 34, 0.3);
+      }
+
+      ::-webkit-scrollbar-track {
+          box-shadow: none;
+          background-color: transparent;
+      }
+
+    </style>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"/>
+    <title>Circulus PC</title>
+  </head>
+  <body>
+    <webview class="view" id='main' src="https://ko.khanacademy.org" disablewebsecurity webpreferences="allowRunningInsecureContent"></webview>
+    <webview class="view" id='assist'  src="https://canvers.net/assist.html" disablewebsecurity webpreferences="allowRunningInsecureContent"></webview>
+  </body>
+</html>

@@ -1,0 +1,189 @@
+#VOICE section {
+  width : 100%;
+  height : 100%;
+}
+
+#VOICE .menu {
+  width : 64px;
+  height : 100%;
+}
+
+#waveform {
+  width: 100%;
+  height: calc(100% - 440px);
+}
+
+#waveform > div {
+  width : 100%;
+}
+
+#VOICE .resource {
+  width : calc(25% - 64px);
+  height : 100%;
+}
+
+#VOICE .resource ul {
+  float : left;
+  height : 100%;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+#VOICE :disabled {
+  background-color: lightgray;
+}
+
+#VOICE :disabled > label {
+  background-color: lightgray !important;
+}
+
+#VOICE .resource .prompt {
+  width : 100%;
+  height : 192px;
+}
+
+#VOICE .resource .prompt textarea {
+  width : 100%;
+  height : 128px;
+}
+
+#VOICE .workflow {
+  width : 75%;
+  height : 100%;
+}
+
+/*
+#VOICE .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+#VOICE button {
+  height : 48px;
+}
+
+#VOICE div {
+  float : left;
+}
+
+#VOICE .resource img {
+  width : 90%;
+  margin : 5%;
+}
+
+#VOICE video {
+  width : 90%;
+  padding : 5%;
+}
+
+#VOICE .resource li {
+  float : left;
+  width : 100%;
+}
+
+
+#VOICE div.item {
+  height : 160px;
+}
+
+#VOICE div.caption {
+  width : 100%;
+}
+
+#VOICE select.size {
+  width : 64px;
+}
+
+#VOICE .item input[type=number] {
+  height : 100%;
+}
+
+#VOICE select.font {
+  width : calc(100% - 494px);
+}
+
+#VOICE option {
+  text-align: center;
+}
+
+#VOICE .w64p {
+  width : 64px;
+}
+
+#VOICE .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+#VOICE .output .video {
+  width : 100%;
+  padding-top : 12px;
+  padding-bottom : 12px;
+  text-align: center;
+}
+
+#VOICE textarea {
+  width: 70%;
+  float: left;
+}
+
+#VOICE .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#VOICE fieldset img {
+  width : 75%;
+}
+
+#VOICE .VOICE img{
+  height : 160px;
+}
+
+#VOICE select {
+  text-align: center;
+  float : left;
+  background-color : white;
+}
+
+#VOICE input[type="range"] {
+  height: 48px;
+}
+
+#VOICE fieldset p {
+  text-align: center;
+}
+
+#VOICE fieldset {
+  text-align: center;
+}
+
+#VOICE .w45 {
+  width : 46%;
+  text-align: left;
+}
+
+#VOICE .w30 {
+  width : 30%;
+  text-align: left;
+}
+
+#VOICE fieldset input[type="range"]{
+  width : 100%;
+}
+
+#VOICE .inner {
+  float : left;
+  margin : 5px;
+}
+
+#VOICE .workflow button {
+  margin-top : 10px;
+}

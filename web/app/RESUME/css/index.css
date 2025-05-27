@@ -1,0 +1,232 @@
+#RESUME section {
+  width : 100%;
+  height : 100%;
+}
+
+#RESUME .menu {
+  background-color: rgba(0,81,114,0.6);
+  width : 64px;
+  height : 100%;
+}
+
+#RESUME .w66 {
+  width : 67% !important;
+}
+
+#RESUME img {
+  width: 95%;
+}
+
+#RESUME .resource {
+  /*
+  background-color: rgba(0,40,57,0.6);
+  */
+  width : calc(25% - 64px);
+  height : 100%;
+}
+
+#RESUME fieldset.clicked {
+  color : #ffa5f2 !important;
+  background-color: rgba(40, 15, 91, 0.9) !important;
+
+}
+
+#RESUME ul {
+  float : left;
+  height : 100%;
+  width : 100%;
+  overflow-y: scroll;
+}
+
+.ptro-wrapper {
+  top : 80px !important;
+  width : 46.4%;
+  bottom : 60px !important; 
+  left : unset;
+  right : unset;
+}
+
+.ptro-bar {
+  width : 46.4%;
+  bottom : 20px !important;
+}
+
+#RESUME .left fieldset.response {
+  height : calc(100% - 48px) !important;
+}
+
+#RESUME .resource .prompt {
+  width : 100%;
+  height : 192px;
+}
+
+#RESUME .resource .prompt textarea {
+  width : 100%;
+  height : 128px;
+}
+
+#RESUME .workflow {
+  width : 75%;
+  height : 100%;
+}
+
+#RESUME .header button {
+  width : 10%;
+}
+
+#RESUME select, #RESUME input[type="range"] {
+  margin : 10px;
+  width : calc(100% - 20px);
+
+}
+
+#RESUME .btn {
+  margin-top : 15px;
+}
+
+#RESUME .publish {
+  background-color: #d8c7fb;
+}
+
+/*
+#RESUME .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+/*
+#RESUME button {
+  height : 64px;
+  background-color: transparent !important;
+}
+*/
+
+#RESUME div {
+  float : left;
+}
+
+#RESUME .resource img {
+  width: calc(100% - 5px);
+  margin-left: 5px;
+}
+/*
+#RESUME video {
+  border-radius: 10px;
+  max-height: 98%;
+  max-width : 98%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+*/
+#RESUME .resource li {
+  float : left;
+  width : 100%;
+}
+
+#RESUME div.item {
+  height : 160px;
+}
+
+#RESUME div.caption {
+  width : 100%;
+}
+
+#RESUME select.size {
+  width : 64px;
+}
+
+#RESUME .item input[type=number] {
+  height : 100%;
+}
+
+#RESUME select.font {
+  width : calc(100% - 494px);
+}
+
+#RESUME .w64p {
+  width : 64px;
+}
+
+#RESUME .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+
+
+#RESUME .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#RESUME textarea {
+  /* background-color: black; */
+  border: 1px solid aquamarine;
+  font-size : 14px;
+  height : 20%;
+}
+
+#RESUME .RESUME img {
+  height : 160px;
+}
+
+#RESUME select {
+  float : left;
+}
+
+#RESUME fieldset p {
+  text-align: center;
+}
+
+#RESUME .selected {
+  filter: grayscale(100%);
+}
+
+#RESUME fieldset[name=output]{
+  /*
+  display: flex;
+  background-color: #19083b;*/
+  position: relative;
+  height: calc(100% - 96px) !important;
+  text-align: center;
+  padding-top: 48px;
+}
+
+#RESUME fieldset #i_img {
+  border-radius: 10px;
+  max-height: 98%;
+  max-width : 98%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#RESUME .square, #RESUME .portrait {
+  border-radius: 10px;
+  float : left;
+  width : 48%;
+  margin : 1%;
+}
+
+#RESUME .portrait {
+  padding-top : 10%;
+}
+
+#RESUME .landscape {
+  border-radius: 10px;
+  float : left;
+  width: 90%;
+  margin: 1% 5%;
+}

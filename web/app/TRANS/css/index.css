@@ -1,0 +1,214 @@
+#TRANS section {
+  width : 100%;
+  height : 100%;
+}
+
+#TRANS .menu {
+  background-color: rgba(0,81,114,0.6);
+  width : 64px;
+  height : 100%;
+}
+
+#TRANS .resource {
+  /*
+  background-color: rgba(0,40,57,0.6);
+  */
+  width : calc(25% - 64px);
+  height : 100%;
+}
+
+#TRANS .resource ul {
+  float : left;
+  height : 100%;
+  overflow-y: scroll;
+  width : 100%;
+}
+
+#TRANS .resource .prompt {
+  width : 100%;
+  height : 192px;
+}
+
+#TRANS .resource .prompt textarea {
+  width : 100%;
+  height : 128px;
+}
+
+#TRANS [name=output]{
+  width : calc(100%);
+  text-align: left;
+  height: calc(100% - 50px);
+  color : black;
+  background-color : #FFE;
+  /*
+  color : #ffa5f2;
+  background-color : #19083b;
+  */
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  line-height: 20px;
+  resize: none !important;
+  tab-size: 4;
+}
+
+#TRANS [name=input]{
+  width : calc(100%);
+  text-align: left;
+  height: calc(100% - 218px);
+  color : black;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  line-height: 20px;
+  resize: none !important;
+  tab-size: 4;
+}
+
+#TRANS .codejar-wrap {
+  width : calc(100% - 32px);
+} 
+
+#TRANS .workflow {
+  width : 75%;
+  height : 100%;
+}
+
+/*
+#TRANS .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+#TRANS button {
+  height : 48px;
+}
+
+#TRANS div {
+  float : left;
+}
+
+#TRANS .resource img {
+  width : 90%;
+  margin : 5%;
+}
+
+#TRANS video {
+  width : 90%;
+  padding : 5%;
+}
+
+#TRANS .resource li {
+  float : left;
+  width : 100%;
+}
+
+
+#TRANS div.item {
+  height : 160px;
+}
+
+#TRANS div.caption {
+  width : 100%;
+}
+
+#TRANS select.size {
+  width : 64px;
+}
+
+#TRANS .item input[type=number] {
+  height : 100%;
+}
+
+#TRANS select.font {
+  width : calc(100% - 494px);
+}
+
+#TRANS .w64p {
+  width : 64px;
+}
+
+#TRANS .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+#TRANS .output .video {
+  width : 100%;
+  padding-top : 12px;
+  padding-bottom : 12px;
+  text-align: center;
+}
+
+#TRANS .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#TRANS textarea {
+  color: white;
+  border: 1px solid aquamarine;
+  font-size : 14px;
+}
+
+#TRANS input[type=range] {
+  margin : 0;
+}
+
+#TRANS fieldset img {
+  width : 75%;
+}
+
+#TRANS .VOICE img{
+  height : 160px;
+}
+
+#TRANS select {
+  float : left;
+}
+
+#TRANS input[type="range"] {
+  height: 48px;
+}
+
+#TRANS fieldset p {
+  text-align: center;
+}
+
+#TRANS fieldset {
+  text-align: center;
+}
+
+#TRANS .w45 {
+  width : 46%;
+  text-align: left;
+}
+
+#TRANS .w30 {
+  width : 30%;
+  text-align: left;
+}
+
+#TRANS fieldset input[type="range"]{
+  width : 100%;
+}
+
+#TRANS .inner {
+  float : left;
+  margin : 5px;
+}
+
+#TRANS .workflow button {
+  margin-top : 10px;
+}

@@ -1,0 +1,297 @@
+<html>
+  <head>
+    <title>Welcome to Canvers</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Circulus Inc.">
+    <meta name="description" content="Use generative artificial intelligence to easily generate your ideas, such as search-type conversations (ChatGPT style) images (animation, live action), sounds (music, sound effects), voice synthesis, virtual humans, etc.">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <link rel="icon" type="image/x-icon" href="./icon.png">
+    <script src="./js/marked.min.js"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RJCZDBGKZD');
+    </script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="./css/animate.min.css" />
+        <!--
+    <link href="https://fonts.cdnfonts.com/css/comfortaa" rel="stylesheet">      
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"/>
+        -->
+    <link rel="stylesheet" href="./css/all.min.css"/>
+    <link rel="stylesheet" href="./css/plyr.css" />
+    <!--
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" integrity="sha512-RLF8eOxhuwsRINc7r56dpl9a3VStqrXD+udWahutJrYdyh++2Ghnf+s4jFsOyryKZt/GNjPwbXVPH3MJpKrn2g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    -->
+    <script src="./js/vad.js"></script>    
+    <script src="./js/recorder.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <link rel="manifest" href="/manifest.json">
+  </head>
+  <body id="INDEX">
+    <header style="visibility: hidden;">
+      <button class="common" onclick="$.exit()"><i class="fa-solid fa-xmark"></i></button>
+      <input type="text" placeholder="input message" onkeydown="$(event).talk()"></input>
+      <img name='bot' src="/icon/off.png"></img>
+      <button><i class="fa-solid fa-robot"></i></button>
+      
+    </header>
+    <nav>
+      <button name="home" onclick="home()" ondblclick="full()">
+        <img src="./image/icon.png" width="32">
+        <br/>
+        <span name="home">home</span>
+      </button>
+      <button name="trans" onclick="$.load('TRANS')">
+        <img src="./image/trans.png">
+        <br/>
+        <span name="trans">trans.</span>
+      </button>      
+      <!--
+      <button name="chat" onclick="$.load('CHAT')">
+        <img src="./image/chat.png">
+        <br/>
+        <span name="chat">chat</span>
+      </button>
+      <button name="video" onclick="$.load('VIDEO')">
+        <img src="./image/animation.png">
+        <br/>
+        <span name="clip">Clip</span>
+      </button>        
+      -->      
+      <button name="image" onclick="$.load('IMAGE')">
+        <img src="./image/image.png">
+        <br/>
+        <span name="image">image</span>
+      </button>      
+      <button name="voice" onclick="$.load('VOICE')">
+        <img src="./image/tts.png">
+        <br/>
+        <span name="voice">voice</span>
+      </button>      
+      <button name="sound" onclick="$.load('SOUND')">
+        <img src="./image/music.png">
+        <br/>
+        <span name="sound">sound</span>
+      </button>
+      <!--  
+      <button name="face" onclick="$.load('FACE')">
+        <img src="./image/makeup.png">
+        <br/>
+        <span name="face">Face</span>
+      </button>
+      <button name="imitate" onclick="$.load('IMITATE')">
+        <img src="./image/imitation.png">
+        <br/>
+        <span name="imitate">Imitate</span>
+      </button>
+      --> 
+      <!--
+      <button name="edit" onclick="$.load('EDIT')">
+        <img src="./image/comic-book.png">
+        <br/>
+        <span name="edit">Edit</span>
+      </button>
+      <button name="vector" onclick="$.load('VECTOR')">
+        <img src="./image/database.png">
+        <br/>
+        <span name="vector">Vector</span>
+      </button>
+      <button name="resume" onclick="$.load('RESUME')">
+        <img src="./image/resume.png">
+        <br/>
+        <span name="resume">Resume</span>
+      </button>                         
+      -->     
+      <button name="human" onclick="$.load('HUMAN')">
+        <img src="./image/cyborg.png">
+        <br/>
+        <span name="human">Human</span>
+      </button>
+      <button name="list" class='list' onclick="$.load('LIST')">
+        <i class="fa-regular fa-folder-open"></i>
+        <br/>
+        <span>verse</span>
+      </button>
+      <button name="human" class='account' onclick="account()">
+        <i class="fa-solid fa-user"></i>
+        <br/>
+        <span name="user">guest</span>
+      </button> 
+    </nav>
+    <main>
+      <article id="MAIN">
+        <section name="login">
+          <div class="resource">
+            <ul name="files">
+            </ul>
+          </div>
+          <div class="workflow">
+            <div class="left w66">
+              <fieldset class="w100 chats">
+                <ul name="chats">
+                  <li class="chat user">Welcome back! I am david!</li>
+                </ul>
+              </fieldset>
+  
+              <fieldset class="w100 inputs">
+                <div class="ww100 txtarea">
+                  <textarea name='prompt' placeholder="input here" onkeypress="keypress(event)" rows="2"></textarea>
+                  <button class="mic" onclick="listen(event)"><i class="fa-solid fa-microphone"></i></button>
+                </div>
+              </fieldset>
+              <button style="display:none;" class="stop" onclick="stop(event)"><i class="fa-solid fa-stop"></i></button>
+            </div>
+            <div class="right w33">
+              <fieldset class="w100 top"> <!-- src="${lb.getGen()}/v1/txt2human?text=hi nice to meet you!&lang=en&voice=main" -->
+                <video controlsList="nodownload" class='output' id="virtual" poster="./image/main.gif" src="" autoplay onclick="human()" ></video>
+                <button name="virtual" onclick="human()"><i class="fa-solid fa02x fa-pause"></i></button>
+                <fieldset class="prompt w100">
+                  <legend>Persona</legend>
+                  <select name='persona' onchange="persona()">
+                    <option value="main" style="background-image:url(./image/main.gif)" selected>기본 캐릭터 (학생)</option>
+                    <!--
+                    <option value="man10">Enderson (Tech Expert)</option>
+                    <option value="man8">Mike (Historian)</option>
+                    <option value="man4">Mark (Politician)</option>
+                    <option value="man3">Steve (CEO)</option>
+                    <option value="woman3">Emmy (Doctor)</option>
+                    <option value="woman2">Esder (Teacher)</option>
+                    <option value="woman6">Hanna (Nun)</option>
+                    <option value="woman7">Yuna (Star)</option>
+                    -->
+                    <option name='Anna' style="display:none;" value="Anna">Anna (Helper)</option>
+                  </select>
+                </fieldset> 
+                <fieldset class="prompt w100">
+                  <legend>Knowledge</legend>
+                  <select name='knowledge' onchange="knowledge()">
+                    <option value="" selected>Default</option>
+                  </select>
+                </fieldset> 
+              </fieldset>           
+              <fieldset class="w100 bottom" ondragover="dragOverHandler(event)" ondrop="dropHandler(event)">
+                <video controlsList="nodownload" class='video' id="cam" style="display: none;" autoplay></video> <!-- style="display: none;"-->
+                <canvas class='image' id="capture"></canvas>
+                <button class="w33" onclick="camera(event)"><i class="fa-xl fa-solid fa-camera"></i></button>
+                <button class="w33" onclick="image(event)"><i class="fa-xl fa-solid fa-file-image"></i></button>
+                <button class="w33"  onclick="remove(event)"><i class="fa-xl fa-solid fa-trash-can"></i></button>              
+              </fieldset>
+            </div>
+          </div>
+          <input id='gallary' type="file" accept="image/*" hidden onchange="processImage(event)">
+      </article>
+    </main>
+    <aside id="loading" style="visibility: hidden;">
+      <div class="load">
+        <div class="ring">
+          <div class="ball-holder">
+            <div class="ball"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <aside id="LOGIN" style="display: none;"> <!-- visibility: hidden; -->
+      <fieldset class="cycle">
+        <legend class="cycle">Login</legend>
+        <p style="font-size:24px">발급받은 ID값을 입력해 주세요.</p>
+        <fieldset>
+          <legend>ID *</legend>
+          <input type="text" name='id' placeholder="input id">
+        </fieldset>
+        <fieldset>
+          <legend>Password *</legend>
+          <input type="password" name='pass' placeholder="password">
+        </fieldset> 
+        <br/>     
+        <button class="w100" onclick="_login()">
+          <i class="fa-solid fa-right-to-bracket"></i> Login
+        </button>
+        <!--
+        <button class="w100 mgt5" onclick="admission()">
+          <i class="fa-solid fa-plus"></i> Signin
+        </button>
+        -->
+        </p>
+        <button class="w100" onclick="_close()">
+          <i class="fa-regular fa-circle-xmark"></i> Close
+        </button>        
+        </p> 
+      </fieldset>
+    </aside>
+    <aside id="SIGNIN" style="display: none;">
+      <fieldset class="cycle">
+        <legend class="cycle">Siginin</legend>
+        <fieldset>
+          <legend>ID *</legend>
+          <input type="text" name="id" placeholder="input id">
+        </fieldset>
+        <fieldset>
+          <legend>Password *</legend>
+          <input type="password"  name="pass" placeholder="password">
+        </fieldset> 
+        <fieldset>
+          <legend>Password Confirm *</legend>
+          <input type="password"  name="confirm" placeholder="password configm">
+        </fieldset>
+        <!--
+        <fieldset>
+          <legend>Coupon</legend>
+          <input type="text"  name="coupon" placeholder="coupon number">
+        </fieldset>
+        -->
+        <br/>                       
+        <button class="w100" name="id" onclick="siginin()">
+          <i class="fa-solid fa-plus"></i> Signin
+        </button>
+        </p>
+      </fieldset>
+    </aside>
+
+    <aside id="VIEW" style="display: none;">
+      <fieldset class="cycle">
+        <fieldset>
+          <legend>Prompt</legend>
+          <input type="text" name="prompt" />
+        </fieldset>
+        <fieldset>
+          <legend>Content</legend>
+          <textarea name="content"></textarea>
+        </fieldset> 
+        <br/>                 
+        <button class="w100" name="close" onclick="$.close()">
+          <i class="fa-solid fa-circle-xmark"></i> <span name="close">Close</span>
+        </button>
+      </fieldset>
+    </aside>
+
+
+    <footer style="visibility:hidden">  <!-- toast message -->
+      Welcome to david!
+    </footer>
+  </body>
+
+    <!--
+        <script src="/vs/loader.js"></script>   
+  <script src='./js/pibo.js'></script>
+  <script src="//unpkg.com/topojson-client"></script>
+  <script src="//unpkg.com/globe.gl"></script>
+  <script src="https://cdn.jsdelivr.net/npm/donutty@2.3.1/src/donutty.min.js"></script>
+  <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+  -->
+  <script src='./js/$.js'></script>
+  <!--
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.8/plyr.min.js" integrity="sha512-vONptKEoKbP1gaC5UkbYDa9OPr04ur4bxaaqT7DAJxGHB2oogtseCPrl5e5hPFokGYotlGNV4d+GM593ka7iNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/painterro@1.2.78/build/painterro.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js" integrity="sha512-rdhY3cbXURo13l/WU9VlaRyaIYeJ/KBakckXIvJNAQde8DgpOmE+eZf7ha4vdqVjTtwQt69bD2wH2LXob/LB7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  -->
+
+  <script src="./js/wavesurfer.min.js"></script>  
+  <script src="./js/wavesurfer.microphone.min.js"></script>
+  
+  <script src='./js/index.js'></script>
+</html>

@@ -1,0 +1,178 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="HUMAN">
+      <section>
+        <div class="ww25">
+          <fieldset class="choice">
+            <legend>* <span name="face">Face</span></legend>
+            <ul name="images">
+              <li>Now loading...</li>                                 
+            </ul>
+            <ul name="videos">
+              <li>Now loading...</li>                                 
+            </ul>
+          </fieldset>
+        </div>
+        <div class="workflow">
+          <!--
+          <div class="header">
+            <i class="fa-regular fa-layer-plus"></i> Generator
+          </div>
+          -->
+          <div class="ww100">
+            <fieldset class='output' name="output"> 
+              <button name='remove' class='remove' onclick="$(event).remove()"><i class="fa-solid fa-trash"></i></button>
+              <button name='download' class='down' onclick="$(event).download()"><i class="fa-solid fa-download"></i></button>
+              <video autoplay controls src="/web/image/demo.mp4"></video> <!-- autoplay -->
+            </fieldset>
+            <!-- controlsList="nodownload" -->
+            <!--
+            <div name="option" class="ww100">
+              <div class="ww25">
+                <fieldset>
+                  <legend><span name="type">Type</span> *</legend>
+                  <select class="w100" name="h_type">
+                    <option value="full" selected>Full</option>
+                    <option value="crop">Crop</option>
+                    <option value="resize">Resize</option>
+                  </select>
+
+                  <input id="h_crop" type="radio" name="h_type" value="crop" checked>
+                  <label class='w33' for="h_crop">
+                    <i class="fa-solid fa-face-meh"></i> <span name="face">face</span>
+                  </label>
+                  <input id="h_full" type="radio" name="h_type" value="full">
+                  <label class='w33' for="h_full">
+                    <i class="fa-solid fa-person"></i> <span name="body">body</span>
+                  </label>               
+                  <input id="h_resize" type="radio" name="h_type" value="resize">
+                  <label class='w33' for="h_resize">
+                    <i class="fa-solid fa-expand"></i> <span name="resize">resize</span>
+                  </label>        
+
+                </fieldset> 
+              </div>
+              <div class="ww25">
+                <fieldset class='choice'> 
+                  <legend><span name="style">Style</span></legend>
+                  <select class="w100" name="style">
+                    <option value="random" selected>random</option>
+                    <option value="0">pose 0</option>
+                    <option value="1">pose 1</option>
+                    <option value="2">pose 2</option>
+                    <option value="3">pose 3</option>
+                    <option value="4">pose 4</option>
+                    <option value="5">pose 5</option>
+                    <option value="6">pose 6</option>
+                    <option value="7">pose 7</option>
+                    <option value="8">pose 8</option>
+                    <option value="9">pose 9</option>
+                    <option value="10">pose 10</option>
+                    <option value="11">pose 11</option>
+                    <option value="12">pose 12</option>
+                    <option value="13">pose 13</option>
+                    <option value="14">pose 14</option>
+                    <option value="15">pose 15</option>
+                    <option value="16">pose 16</option>
+                    <option value="17">pose 17</option>
+                    <option value="18">pose 18</option>
+                    <option value="19">pose 19</option>
+                    <option value="10">pose 10</option>
+                    <option value="21">pose 21</option>
+                    <option value="22">pose 22</option>
+                    <option value="23">pose 23</option>
+                    <option value="24">pose 24</option>
+                    <option value="25">pose 25</option>
+                    <option value="26">pose 26</option>
+                    <option value="27">pose 27</option>
+                    <option value="28">pose 28</option>
+                    <option value="29">pose 29</option>
+                    <option value="30">pose 30</option>
+                    <option value="31">pose 31</option>
+                    <option value="32">pose 32</option>
+                    <option value="33">pose 33</option>
+                    <option value="34">pose 34</option>
+                    <option value="35">pose 35</option>
+                    <option value="36">pose 36</option>
+                    <option value="37">pose 37</option>
+                    <option value="38">pose 38</option>
+                    <option value="39">pose 39</option>                
+                    <option value="40">pose 10</option>
+                    <option value="41">pose 41</option>
+                    <option value="42">pose 42</option>
+                    <option value="43">pose 43</option>
+                    <option value="44">pose 44</option>
+                    <option value="45">pose 45</option>
+
+                  </select>
+                </fieldset>                
+              </div>  
+              -->     
+              <div class="ww75">
+                <fieldset class='choice'>
+                  <legend><span name="remove">Background</span></legend>
+                  <input id="h_remove_0" type="radio" name="h_remove" value="0" checked>
+                  <label class='w16' for="h_remove_0">
+                    <span name="off">Off</span>
+                  </label>                    
+                  <input id="h_remove_1" type="radio" name="h_remove" value="2"> <!-- 1 은 transparent -->
+                  <label class='w16' for="h_remove_1" style="background-color: white; color:white;">
+                    <span name="white">white</span>
+                  </label>   
+                  <input id="h_remove_2" type="radio" name="h_remove" value="3"> <!-- 1 은 transparent -->
+                  <label class='w16' for="h_remove_2" style="background-color: lightgray; color:lightgray;">
+                    <span name="gray">gray</span>
+                  </label>                                      
+                  <input id="h_remove_3" type="radio" name="h_remove" value="4">
+                  <label class='w16' for="h_remove_3" style="background-color: black;color : black;">
+                    <span name="black">black</span>
+                  </label>                                      
+                  <input id="h_remove_4" type="radio" name="h_remove" value="5">
+                  <label class='w16' for="h_remove_4" style="background-color: blue;color :blue;">
+                    <span name="blue">blue</span>
+                  </label>                                      
+                  <input id="h_remove_5" type="radio" name="h_remove" value="6">
+                  <label class='w16' for="h_remove_5" style="background-color: green;color: green;">
+                    <span name="green">green</span>
+                  </label>                                                                          
+                </fieldset>                  
+              </div>
+              <div class="ww25">
+                <fieldset class='choice'>
+                  <legend><span name="upscale">Upscale</span></legend>
+                  <input id="h_enhance_0" type="radio" name="h_enhance" value="1">
+                  <label class='w48' for="h_enhance_0">
+                    <span name="on">On</span> 
+                  </label>  
+                  <input id="h_enhance_1" type="radio" name="h_enhance" value="0" checked>
+                  <label class='w48' for="h_enhance_1">
+                    <span name="off">Off</span>
+                  </label>                    
+                </fieldset>                 
+              </div>                               
+            </div>
+            <button class="w100 gen btn" onclick="$(event).generate()">
+              <i class="fa-solid fa-wand-sparkles"></i> <span name="generate">Generate Human</span>
+            </button> 
+          </div>
+        </div>
+        <div class="ww25">
+          <fieldset class="choice">
+            <legend>* <span name="voice">Voice</span></legend>
+            <ul name="audios">
+              <li>Now loading...</li>                                 
+            </ul>
+          </fieldset>       
+        </div>
+        
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

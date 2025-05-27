@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 from iterator import IterableStreamer
 import numpy as np
 import openvino_genai as ov_genai
-import onnxruntime_genai as og
+#import onnxruntime_genai as og
 import onnxruntime as rt
 import utils
 import commons
@@ -27,8 +27,8 @@ from scipy.io.wavfile import write
 from text import text_to_sequence
 import torch
 from serverinfo import si
-import onnxruntime_genai as og
 from llama_cpp import Llama
+from openvino import Core
 import asyncio
 
 _IP = si.getIP()
@@ -90,9 +90,17 @@ pipe_disney = ov_genai.Text2ImagePipeline(model_disney, device="CPU")
 
 model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
 pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
+
 #ko_base_f16.onnx / OpenVINOExecutionProvider
-pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
-conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
+#pipe_tts = rt.InferenceSession(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base_f16.onnx"), sess_options=rt.SessionOptions(), providers=["CPUExecutionProvider"], provider_options=[{"device_type" : "CPU" }]) #, "precision" : "FP16"
+#conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="ko_base.json"))
+core = Core()
+config = {"PERFORMANCE_HINT": "LATENCY"}
+path_tts = snapshot_download(repo_id="rippertnt/on-vits2-multi-tts-v1", allow_patterns="*ov*")
+pipe_tts = core.compile_model(core.read_model(model=f"{path_tts}/all_base_ov.xml"), device_name="CPU", config=config)
+conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="all_base.json"))
+
+
 
 def trans_ko2en(prompt):
   source = token_ko2en.convert_ids_to_tokens(token_ko2en.encode(prompt))
@@ -197,6 +205,7 @@ def stream_ko2en(prompts):
     elif idx < length - 1:
       yield "</br>"
 
+"""
 def process_stream(chat : Chat, isStream):
 	if chat.rag is not None and len(chat.rag) > 10:
 		chat.type=  f"{chat.type}\n그리고, 다음 내용을 참고하여 대답을 하되 잘 모르는 내용이면 모른다고 솔직하게 대답하세요.\ncontext\n{chat.rag}"
@@ -216,6 +225,7 @@ def process_stream(chat : Chat, isStream):
 	generator.append_tokens(input_tokens)
 
 	return generator
+"""
 
 async def stream_response(chat, isStream=True):
 
@@ -329,28 +339,30 @@ def stt(file : UploadFile = File(...), lang="ko"):
 
 @app.get("/v1/tts", response_class=FileResponse, summary="입력한 문장으로 부터 음성을 생성합니다.")
 def tts(text = "", voice = 1, lang='ko', static=0):
-    #org_text = parse.quote(text, safe='', encoding="cp949")
     start = t.time()
     print(text, static)
 
     phoneme_ids = text_to_sequence(text, conf_tts.data.text_cleaners)
-    if conf_tts.data.add_blank:
-        phoneme_ids = commons.intersperse(phoneme_ids, 0)
-    phoneme_ids = torch.LongTensor(phoneme_ids)
     text = np.expand_dims(np.array(phoneme_ids, dtype=np.int64), 0)
-    text_lengths = np.array([text.shape[1]], dtype=np.int64)
-    scales = np.array([0.667, 1.0, 0.8], dtype=np.float16)#dtype=np.float16) 16
-    sid = np.array([int(voice)], dtype=np.int64) if voice is not None else None
-    #sid = np.array([int(voice)]) if voice is not None else None
-    audio = pipe_tts.run(None, {"input": text,"input_lengths": text_lengths,"scales": scales,"sid": sid})[0].squeeze((0, 1))
-    #print(audio)
-    print(t.time() - start)
-    
+
+    inputs = {
+        "input": text,
+        "input_lengths":  np.array([text.shape[1]], dtype=np.int64),
+        "scales": np.array([0.667, 1.0, 0.8], dtype=np.float16),
+        "sid" : np.array([int(voice)], dtype=np.int64) if voice is not None else None
+    }
+
+    start_time = t.time()
+    result = pipe_tts(inputs)
+    print(f"Inference time: {t.time() - start_time:.4f} seconds")
+
+    audio = list(result.values())[0].squeeze((0, 1))  
+
     if int(static) > 0:
-      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename="output/human.wav")
-      return "output/human.wav"
+      write(data=audio, rate=conf_tts.data.sampling_rate, filename=f"human.wav")
+      return f"human.wav"
     else:
-      write(data=audio.astype(np.float32), rate=conf_tts.data.sampling_rate, filename=f"output/{str(start)}.wav")
+      write(data=audio, rate=conf_tts.data.sampling_rate, filename=f"output/{str(start)}.wav")
       return f"output/{str(start)}.wav"
 
 @app.post("/v1/ko2en", summary="한국어를 영어로 번역합니다.")

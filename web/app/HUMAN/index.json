@@ -1,0 +1,15 @@
+{
+  "crop" : "얼굴",
+  "face" : "얼굴",
+  "type" : "모델",
+  "full" : "전신",
+  "resize" : "조정",
+  "random" : "무작위",
+  "remove" : "배경제거",
+  "style" : "스타일",
+  "on" : "활성",
+  "off" : "비활성",
+  "upscale" : "업스케일",
+  "generate" : "생성하기",
+  "voice" : "음성"
+}

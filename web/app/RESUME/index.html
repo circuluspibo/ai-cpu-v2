@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="RESUME">
+      <section>
+        <div class="resource">
+          <ul name="files"> 
+                                            
+          </ul>
+        </div>
+        <div class="workflow">
+            <div class="ww100" name="o_text">
+              <div class="left w66">
+                <fieldset class="w45 response">
+                  <legend><i class="fa-regular fa-image"></i> <span name="image">Faces</span></legend>
+                  <ul name="images">
+                    
+                  </ul>
+                </fieldset>
+                <fieldset class="w45 response">
+                  <legend><i class="fa-solid fa-music"></i> <span name="audio">Voices</span></legend>
+                  <ul name="audios">
+                    
+                  </ul>
+                </fieldset>
+              </div>
+              <div class="w33">
+                <fieldset class="prompt">
+                  <legend>이름</legend>
+                  <input type="text" name="p_name" placeholder="이름을 입력하세요"/>
+                </fieldset>
+                <div name="option" class="ww100">
+                  <div class="ww50">
+                    <fieldset  class="choice">
+                      <legend>성별</legend>
+                      <input id="p_female" type="radio" name="p_gender" value="여성">
+                      <label class='w48' for="p_female">
+                        여성 
+                      </label>  
+                      <input id="p_male" type="radio" name="p_gender" value="남성" checked>
+                      <label class='w48' for="p_male">
+                        남성
+                      </label>   
+                    </fieldset>
+                  </div>
+                  <div class="ww50">
+                    <fieldset class="prompt">
+                      <legend>생일</legend>
+                      <input type="date" name="p_date" value="2020-01-01">   
+                    </fieldset>
+                  </div>                         
+                </div>       
+                <fieldset class="prompt">
+                  <legend>직업</legend>
+                  <input type="text" name="p_job" placeholder="직업을 입력하세요"/>
+                </fieldset>                                 
+                <fieldset class="prompt"> 
+                  <legend>성격</legend>
+                  <textarea type="text" name='p_personal' placeholder="성격 및 성향을 입력하세요." rows="3"></textarea>                                    
+                </fieldset>           
+                <fieldset class="prompt choice"> 
+                  <legend>특기</legend>
+                  <textarea type="text" name='p_special' placeholder="주요 특기 및 장점을 입력하세요." rows="3"></textarea>
+                </fieldset>  
+
+                <div class="ww100 btn">
+                  <button class="gen" onclick="$(event).generate()">
+                    <i class="fa-solid fa-wand-sparkles"></i> Generate</span>
+                  </button>
+                  <!--
+                  <div class="ww80">
+                  </div>
+                  <div class="ww20">
+                    <button class="speech" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+                  </div>
+                  -->
+                </div>                                          
+            </div>
+          </div>                                            
+        </div>                   
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

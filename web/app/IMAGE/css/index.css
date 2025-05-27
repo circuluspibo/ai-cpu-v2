@@ -1,0 +1,221 @@
+#IMAGE section {
+  width : 100%;
+  height : 100%;
+}
+
+#IMAGE .menu {
+  background-color: rgba(0,81,114,0.6);
+  width : 64px;
+  height : 100%;
+}
+
+#IMAGE .w66 {
+  width : 67% !important;
+}
+
+#IMAGE .resource {
+  /*
+  background-color: rgba(0,40,57,0.6);
+  */
+  width : calc(25% - 64px);
+  height : 100%;
+}
+
+#IMAGE .workflow {
+  width : 75%;
+  height : 100%;
+}
+
+#IMAGE .resource ul {
+  float : left;
+  height : 100%;
+  overflow-y: scroll;
+}
+
+.ptro-wrapper {
+  top : 80px !important;
+  width : 46.4%;
+  bottom : 60px !important; 
+  left : unset;
+  right : unset;
+}
+
+.ptro-bar {
+  width : 46.4%;
+  bottom : 20px !important;
+}
+
+#IMAGE .left fieldset {
+  height : calc(100% - 48px) !important;
+}
+
+#IMAGE .resource .prompt {
+  width : 100%;
+  height : 192px;
+}
+
+#IMAGE .resource .prompt textarea {
+  width : 100%;
+  height : 128px;
+}
+
+#IMAGE .header button {
+  width : 10%;
+}
+
+#IMAGE select, #IMAGE input[type="range"] {
+  margin : 10px;
+  width : calc(100% - 20px);
+
+}
+
+#IMAGE .btn {
+  margin-top : 15px;
+}
+
+/*
+#IMAGE .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+/*
+#IMAGE button {
+  height : 64px;
+  background-color: transparent !important;
+}
+*/
+
+#IMAGE div {
+  float : left;
+}
+
+#IMAGE .resource img {
+  width: calc(100% - 5px);
+  margin-left: 5px;
+}
+
+#IMAGE video {
+  border-radius: 10px;
+  max-height: 98%;
+  max-width : 98%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+
+#IMAGE .resource li {
+  float : left;
+  width : 100%;
+}
+
+#IMAGE div.item {
+  height : 160px;
+}
+
+#IMAGE div.caption {
+  width : 100%;
+}
+
+#IMAGE select.size {
+  width : 64px;
+}
+
+#IMAGE .item input[type=number] {
+  height : 100%;
+}
+
+#IMAGE select.font {
+  width : calc(100% - 494px);
+}
+
+#IMAGE .w64p {
+  width : 64px;
+}
+
+#IMAGE .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+
+
+#IMAGE .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#IMAGE textarea {
+  border: 1px solid aquamarine;
+  font-size : 14px;
+  height : 18%;
+}
+
+#IMAGE .model label {
+  height : 64px !important;
+  line-height: 64px !important;
+}
+
+#IMAGE .image img {
+  height : 160px;
+}
+
+#IMAGE select {
+  float : left;
+}
+
+#IMAGE fieldset p {
+  text-align: center;
+}
+
+#IMAGE .selected {
+  filter: grayscale(100%);
+}
+
+#IMAGE fieldset[name=output]{
+  /*
+  display: flex;
+  background-color: #19083b;*/
+  position: relative;
+  height: calc(100% - 96px) !important;
+  text-align: center;
+  padding-top: 48px;
+}
+
+#IMAGE fieldset #i_img {
+  border-radius: 10px;
+  max-height: 98%;
+  max-width : 98%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#IMAGE .square, #IMAGE .portrait {
+  border-radius: 10px;
+  float : left;
+  width : 48%;
+  margin : 1%;
+}
+
+#IMAGE .portrait {
+  padding-top : 10%;
+}
+
+#IMAGE .landscape {
+  border-radius: 10px;
+  float : left;
+  width: 90%;
+  margin: 1% 5%;
+}

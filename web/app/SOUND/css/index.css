@@ -1,0 +1,192 @@
+#SOUND section {
+  width : 100%;
+  height : 100%;
+}
+
+#SOUND .menu {
+  background-color: rgba(0,81,114,0.6);
+  width : 64px;
+  height : 100%;
+}
+
+#waveform2 {
+  width: 100%;
+  height: calc(100% - 440px);
+
+}
+
+#SOUND .resource {
+
+  width : calc(25% - 64px);
+  height : 100%;
+}
+
+#SOUND img {
+  padding: auto;
+  border-radius: 20px;
+  width: auto !important;
+  height: 50%;
+  text-align: center;
+  position: absolute;
+  top: 60px;
+  left: 33%;
+}
+
+#SOUND .resource ul {
+  float : left;
+  height : 100%;
+  overflow-y: scroll;
+  width : 100%;
+}
+
+#SOUND .resource .prompt {
+  width : 100%;
+  height : 192px;
+}
+
+#SOUND .resource .prompt textarea {
+  width : 100%;
+  height : 128px;
+}
+
+#SOUND .workflow {
+  width : 75%;
+  height : 100%;
+}
+
+/*
+#SOUND .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+#SOUND button {
+  height : 48px;
+}
+
+#SOUND div {
+  float : left;
+}
+
+#SOUND .resource img {
+  width : 90%;
+  margin : 5%;
+}
+
+#SOUND video {
+  padding: 0;
+  border-radius: 20px;
+  /* width: 50%; */
+  text-align: center;
+  position: absolute;
+  top: 30%;
+  left: 60%;
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+
+#SOUND .resource li {
+  float : left;
+  width : 100%;
+}
+
+
+#SOUND div.item {
+  height : 160px;
+}
+
+#SOUND div.caption {
+  width : 100%;
+}
+
+#SOUND select.size {
+  width : 64px;
+}
+
+#SOUND .item input[type=number] {
+  height : 100%;
+}
+
+#SOUND select.font {
+  width : calc(100% - 494px);
+}
+
+#SOUND .w64p {
+  width : 64px;
+}
+
+#SOUND .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+#SOUND .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#SOUND input[type=range] {
+  margin : 0;
+}
+
+#SOUND fieldset img {
+  width : 75%;
+}
+
+#SOUND .VOICE img{
+  height : 160px;
+}
+
+#SOUND select {
+  float : left;
+}
+
+#SOUND input[type="range"] {
+  height: 48px;
+}
+
+#SOUND fieldset p {
+  text-align: center;
+}
+
+#SOUND fieldset {
+  text-align: center;
+}
+
+#SOUND .w45 {
+  width : 46%;
+  text-align: left;
+}
+
+#SOUND .w30 {
+  width : 30%;
+  text-align: left;
+}
+
+#SOUND fieldset input[type="range"]{
+  width : 100%;
+}
+
+#SOUND .inner {
+  float : left;
+  margin : 5px;
+}
+
+#SOUND textarea {
+  color : black;
+  background-color: white;
+  border: 1px solid aquamarine;
+  font-size : 14px;
+  width: 70%;
+  float: left;
+}
+
+#SOUND .workflow button {
+  margin-top : 10px;
+}

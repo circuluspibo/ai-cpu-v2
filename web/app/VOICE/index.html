@@ -1,0 +1,239 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="VOICE">
+      <section>
+        <div class="resource">
+          <!--
+          <div class="header">
+            <i class="fa-solid fa-microphone"></i> Voice
+          </div>
+          -->
+          <ul name="files">
+            <!--
+            <li> 
+              <fieldset>
+                <p>오늘은 정말로 좋은 하루를 보냈으면 좋겠어.</p>   
+                <audio controlsList="nodownload"  controls src="/image/tts.mp3"></audio>
+                </p>
+              </fieldset>
+            </li>
+            -->                                                                                                                                   
+          </ul>
+        </div>
+        <div class="workflow">
+          <!--
+          <div class="header">
+            <i class="fa-regular fa-layer-plus"></i>  Generator
+          </div>
+          -->
+          <fieldset class="output" ondrop="$(event).dropHandler(event)" ondragover="$(event).dragOverHandler(event)">
+            <button class="remove" onclick="$(event).clear()"><i class="fa-solid fa-trash"></i></button>
+            <button class="file" onclick="$(event).file()"><i class="fa-solid fa-folder-open"></i></button>
+            <button class="camera" onclick="$(event).record()"><i class="fa-solid fa-microphone"></i></button>
+            <input id='v_gallary' type="file" accept="audio/*" hidden onchange="$(event).process()"> 
+            <div id="waveform"></div>
+            <!--
+            <audio controlsList="nodownload"  name='output' autoplay controls src="/image/tts.mp3"></audio>
+            -->
+            <button class='w25' onclick="$(event).play()">
+              <i class="fa-solid fa-play"></i> <span name="play">Play</span>
+            </button>
+            <button class='w25' onclick="$(event).pause()">
+              <i class="fa-solid fa-pause"></i> <span name="pause">Pause</span>
+            </button>
+            <button class='w25' onclick="$(event).stop()">
+              <i class="fa-solid fa-stop"></i> <span name="stop">Stop</span>
+            </button>
+            <button class='w25' onclick="$(event).download()">
+              <i class="fa-solid fa-download"></i> <span name="down">Download</span>
+            </button>
+          </fieldset>
+          <div class="ww100">
+            <!--
+            <div class="ww50">
+              <fieldset name="voice_lang">
+                <legend><span name="lang">Language</span> *</legend>
+                <input id="ko" type="radio" name="lang" value="ko" checked>
+                <label class='w50' for="ko">
+                  <i class="fa-solid fa-palette"></i> <span name="ko">Korean</span>
+                </label>  
+                <input id="en" type="radio" name="lang" value="en">
+                <label class='w50' for="en">
+                  <i class="fa-regular fa-image"></i> <span name="en">English</span>
+                </label>                     
+              </fieldset>
+            </div>
+            -->
+            <div class="ww25">
+              <fieldset name="lang"> 
+                <legend><span name="lang">Voice</span></legend>
+                <select class="w100" name="lang" onchange="$(event).changeLang()" style="background-color: #ece3ff;">
+                  <option value="ko" selected>Korean</option>
+                  <option value="en">English</option>
+                  <option value="cn">Chinese</option>
+                  <option value="ja">Japanese</option>
+                  <option value="ar">Arabic</option>
+                  <option value="de">German</option>
+                  <option value="fa">Persian</option>
+                  <option value="fr">French</option>
+                  <option value="id">Indonesian</option>
+                  <option value="km">Khmer</option>
+                  <option value="mn">Mongolian</option>
+                  <option value="pt">Portuguese</option>
+                  <option value="ru">Russian</option>
+                  <option value="th">Thai</option>
+                  <option value="tr">Turkish</option>
+                  <option value="vi">Vietnamese</option>
+                </select> 
+              </fieldset>
+            </div>           
+            <div class="ww25">
+              <fieldset name="voice_model"> 
+                <legend><span name="voice">Voice</span></legend>
+                <select class="w100" name="voice" onchange="$(event).changeVoice()" style="background-color: #ece3ff;">
+                  <option value="0" selected>Voice 0</option>
+                  <option value="1">Voice 1</option>
+                  <option value="2">Voice 2</option>
+                  <option value="3">Voice 3</option>
+                  <option value="4">Voice 4</option>
+                  <option value="5">Voice 5</option>
+                  <option value="6">Voice 6</option>
+                  <option value="7">Voice 7</option>
+                  <option value="8">Voice 8</option>
+                  <option value="9">Voice 9</option>
+                  <option value="10">Voice 10</option>
+                  <option value="11">Voice 11</option>
+                  <option value="12">Voice 12</option>
+                  <option value="13">Voice 13</option>
+                  <option value="14">Voice 14</option>
+                  <option value="15">Voice 15</option>
+                                  
+                  
+                  <!--
+                                    
+                  <option value="16">Voice 16</option>
+                  <option value="17">Voice 17</option>
+                  <option value="18">Voice 18</option> 
+                  <option value="19">Voice 19</option> 
+                  <option value="20">Voice 20</option>                   
+                  --> 
+                </select>
+              </fieldset>
+            </div>    
+            <div class="ww25">
+              <fieldset name="voice_rate"> 
+                <legend><span name="pitch">Pitch</span></legend>
+                <select class="w100" name="pitch">
+                  <option value="x-high">very high</option>
+                  <option value="high">high</option>
+                  <option value="medium" selected>normal</option>
+                  <option value="low">low</option>
+                  <option value="x-low">very low</option>                
+                </select>
+              </fieldset>
+            </div>
+            <div class="ww25">
+              <fieldset  name="voice_speed"> 
+                <legend><span name="rate">Rate</legend>
+                <select class="w100"  name="rate">
+                  <option value="x-fast">very fast</option>
+                  <option value="fast">fast</option>
+                  <option value="medium" selected>normal</option>
+                  <option value="slow">slow</option>
+                  <option value="x-slow">very slow</option>
+                </select>
+              </fieldset>              
+            </div>                    
+          </div>
+          <!--
+          <div class="ww100">
+            <div class="ww33">
+              <fieldset> 
+                <legend><span name="pitch">Pitch</span></legend>
+                <select class="w100" name="pitch">
+                  <option value="x-high">very high</option>
+                  <option value="high">high</option>
+                  <option value="medium" selected>normal</option>
+                  <option value="low">low</option>
+                  <option value="x-low">very low</option>                
+                </select>
+              </fieldset>
+            </div>
+            <div class="ww33">
+              <fieldset> 
+                <legend><span name="rate">Rate</legend>
+                <select class="w100"  name="rate">
+                  <option value="x-fast">very fast</option>
+                  <option value="fast">fast</option>
+                  <option value="medium" selected>normal</option>
+                  <option value="slow">slow</option>
+                  <option value="x-slow">very slow</option>
+                </select>
+              </fieldset>              
+            </div>
+            <div class="ww33">              
+              <fieldset> 
+                <legend><span name="volume">Volume</legend>
+                <select class="w100" name="volume"> 
+                  <option value="x-loud" selected>very loud</option>
+                  <option value="loud">loud</option>  
+                  <option value="medium">medium</option>
+                  <option value="soft">soft</option>
+                  <option value="x-soft">very soft</option>
+                  <option value="silent">silent</option>              
+                </select>
+              </fieldset>
+            </div>                        
+          </div>
+          -->
+          <div class="ww100">
+            <fieldset class="prompt">                
+              <textarea type="text" name='prompt' placeholder="input text"  rows="3"></textarea>
+              <div name='option' style="width: 30%;float: left;overflow-y: auto;height: 14%;">
+                <button class="example" onclick="$(event).generate('안녕하세요. 인공지능을 만나서 반가워요!',0)">
+                  <span name="kpop">안녕하세요. 인공지능을 만나서 반가워요!</span>
+                </button>
+                <button class="example" onclick="$(event).generate('Hello. I am artificial intelligent',1)">
+                  <span name="classic">Hello. I am artificial intelligent</span>
+                </button>            
+                <button class="example" onclick="$(event).generate('مرحبًا دعونا ننشئ عالمًا من الذكاء الاصطناعي على الجهاز معًا.',2)">
+                  <span name="piano">مرحبًا دعونا ننشئ عالمًا من الذكاء الاصطناعي على الجهاز معًا.</span>
+                </button>     
+                <button class="example" onclick="$(event).generate('안녕? 나는 남자 아이 목소리 테스트 중이야.',3)">
+                  <span name="jazz">안녕? 나는 남자 아이 목소리 테스트 중이야.</span>
+                </button>                   
+                <br/>                 
+                <button class="example" onclick="$(event).generate('안녕하세요. 저는 할아버지 목소리 테스트 중입니다.',4)">
+                  <span name="rain">안녕하세요. 저는 할아버지 목소리 테스트 중입니다.</span>
+                </button>                                    
+                <button class="example" onclick="$(event).generate('안녕하세요. 저는 할머니 목소리 테스트 중입니다.',5)">
+                  <span name="talk">안녕하세요. 저는 할머니 목소리 테스트 중입니다.</span>
+                </button>                  
+              </div>     
+            </fieldset>       
+          </div>
+          <div class="ww100">
+            <button class="w100 gen" onclick="$(event).generate()">
+              <i class="fa-solid fa-wand-sparkles"></i> <span name="generate">Generate Sound</span>
+            </button>
+            <!--            
+            <div class="ww80">
+            </div>
+            <div class="ww20">
+              <button class="speech" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+            -->
+          </div>                                                         
+        </div>                   
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

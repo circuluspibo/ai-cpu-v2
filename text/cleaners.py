@@ -1,7 +1,8 @@
 import re
 #from text.japanese import japanese_to_romaji_with_accent, japanese_to_ipa, japanese_to_ipa2, japanese_to_ipa3
-#from text.korean import latin_to_hangul, number_to_hangul, divide_hangul, korean_to_lazy_ipa, korean_to_ipa, fix_g2pk2_error
-#from g2pk2 import G2p as G2pk
+from text.korean import latin_to_hangul, number_to_hangul, divide_hangul, korean_to_lazy_ipa, korean_to_ipa, fix_g2pk2_error
+from g2pk2 import G2p as G2p
+from jamo import h2j, j2hcj
 #from g2p_id import G2p as G2pi
 #from text.mandarin import number_to_chinese, chinese_to_bopomofo, latin_to_bopomofo, chinese_to_romaji, chinese_to_lazy_ipa, chinese_to_ipa, chinese_to_ipa2
 #from text.sanskrit import devanagari_to_ipa
@@ -31,11 +32,14 @@ import re
 
 g2pj = pykakasi.kakasi()
 
+
+ipa_ko = epitran.Epitran('kor-Hang')
+ipa_en = epitran.Epitran('eng-Latn')
 ipa_cn = epitran.Epitran('cmn-Hans', cedict_file='./cedict_1_0_ts_utf-8_mdbg.txt')
 ipa_ja = epitran.Epitran('jpn-Hrgn')
 ipa_ar = epitran.Epitran('ara-Arab')
-ipa_es = epitran.Epitran('spa-Latn')
 
+ipa_es = epitran.Epitran('spa-Latn')
 ipa_pt = epitran.Epitran('por-Latn')
 ipa_fr = epitran.Epitran('fra-Latn')
 ipa_de = epitran.Epitran('deu-Latn')
@@ -45,23 +49,30 @@ ipa_fa = epitran.Epitran('fas-Arab')
 ipa_tr = epitran.Epitran('tur-Latn')
 ipa_vi = epitran.Epitran('vie-Latn')
 ipa_id = epitran.Epitran('ind-Latn')
-
 ipa_th = epitran.Epitran('tha-Thai')
+
 ipa_ru = epitran.Epitran('rus-Cyrl')
 ipa_hu = epitran.Epitran('hun-Latn') #
 ipa_pl = epitran.Epitran('pol-Latn') #
-
 ipa_cs = epitran.Epitran('ces-Latn') #
 ipa_uk = epitran.Epitran('ukr-Cyrl') #
+
 ipa_fi = epitran.Epitran('fin-Latn') #
 ipa_sv = epitran.Epitran('swe-Latn') #
-
 ipa_km = epitran.Epitran('khm-Khmr') #
 ipa_mn = epitran.Epitran('mon-Cyrl-bab') #
+ipa_ms = epitran.Epitran('mal-Mlym') #
 
-ipa_en = epitran.Epitran('eng-Latn')
-ipa_ko = epitran.Epitran('kor-Hang')
+ipa_hi = epitran.Epitran('hin-Deva') #
+ipa_si = epitran.Epitran('sin-Sinh') #
+ipa_ta = epitran.Epitran('tam-Taml') #
+ipa_nl = epitran.Epitran('nld-Latn') #
+ipa_te = epitran.Epitran('tel-Telu') #
 
+ipa_ur = epitran.Epitran('urd-Arab') #
+ipa_fil = epitran.Epitran('tgl-Latn')
+
+#ipa_bn = epitran.Epitran('ben-Beng') #
 _whitespace_re = re.compile(r'\s+')
 
 # Regular expression matching Japanese without punctuation marks:
@@ -205,6 +216,8 @@ def russian_cleaners(text):
 def japanese_cleaners2(text):
     return japanese_cleaners(text).replace('ts', 'ʦ').replace('...', '…')
 
+g2pk = G2p()
+
 def korean_cleaners(text):
     '''Pipeline for Korean text'''
     text = latin_to_hangul(text)
@@ -212,6 +225,7 @@ def korean_cleaners(text):
     text = divide_hangul(text)
     text = fix_g2pk2_error(text)
     text = re.sub(r'([\u3131-\u3163])$', r'\1.', text)
+    print(text)
     return text
 
 
@@ -524,3 +538,75 @@ def canvers_mn_cleaners(text):
     #text = numCleaner(text,'sv')
     phonemes = ipa_mn.transliterate(text)
     return collapse_whitespace(phonemes)
+
+
+
+def canvers_ms_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'fi')
+    phonemes = ipa_ms.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_hi_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_hi.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_si_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_si.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+
+def canvers_ta_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_ta.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_nl_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    text = numCleaner(text,'nl')
+    phonemes = ipa_nl.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_te_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    text = numCleaner(text,'te')
+    phonemes = ipa_te.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_ur_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_ur.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_fil_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_fil.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+"""
+def canvers_bn_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_bn.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+
+def canvers_hk_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_hk.transliterate(text)
+    return collapse_whitespace(phonemes)
+
+def canvers_he_cleaners(text):
+    text = expand_abbreviations(text.lower())
+    #text = numCleaner(text,'sv')
+    phonemes = ipa_he.transliterate(text)
+    return collapse_whitespace(phonemes)
+"""

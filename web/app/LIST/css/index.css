@@ -1,0 +1,256 @@
+#LIST section {
+  width : 100%;
+  height : 100%;
+}
+
+#LIST .menu {
+  background-color: rgba(0,81,114,0.6);
+  width : 64px;
+  height : 100%;
+}
+
+#LIST .resource {
+  background-color: transparent;
+  width : calc(55% - 64px);
+  height : 100%;
+}
+
+#LIST .resource .input {
+  position: absolute;
+  width: calc(24% - 80px);
+  bottom: 36px;
+  height: 64px;
+}
+
+
+#LIST ul li {
+  width : 100%;
+}
+
+#LIST  textarea {
+  width : 100%;
+  height: calc(100% - 220px)
+}
+
+#LIST .workflow {
+  width : calc(100% - 64px);
+  height : 100%;
+}
+
+#LIST .w24 {
+  width : calc(25% - 45px);
+}
+
+#LIST .play {
+  width : 95%;
+  height : 32px;
+  float : left;
+}
+
+#LIST button.speech {
+  width: 64px;
+  height: 48px;
+}
+
+#LIST .w50 {
+  width: calc(50% - 40px) !important;
+}
+
+/*
+#LIST .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+#LIST button {
+  height : 48px;
+}
+
+#LIST div {
+  float : left;
+}
+
+#LIST .resource img {
+  width : 90%;
+  margin : 5%;
+}
+
+#LIST video {
+  width : 100%;
+  /* padding : 5%; */
+}
+
+#LIST div.item {
+  height : 160px;
+}
+
+#LIST div.caption {
+  width : 100%;
+}
+
+#LIST select.size {
+  width : 64px;
+}
+
+#LIST .item input[type=number] {
+  height : 100%;
+}
+
+#LIST input[name=prompt] {
+  width : 100%;
+}
+
+#LIST select.font {
+  width : calc(100% - 494px);
+}
+
+#LIST .w64p {
+  width : 64px;
+}
+
+#LIST .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+#LIST .output .video {
+  width : 100%;
+  padding-top : 12px;
+  padding-bottom : 12px;
+  text-align: center;
+}
+
+#LIST .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#LIST textarea {
+  background-color: black;
+  color: white;
+  border: 1px solid aquamarine;
+  font-size : 14px;
+}
+
+#LIST p.title {
+  color:#ffa5f2;
+  background-color: rgba(0,0,0,0.5);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  white-space: pre-wrap;
+}
+
+#LIST a:link {
+  color:#ffa5f2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  white-space: pre-wrap;
+}
+
+#LIST ul {
+  width : 100%;
+  height : 100%;
+  overflow-y: scroll;
+  overflow-x: clip;
+}
+
+#LIST ul[name=chats] {
+  height: 100%;
+}
+
+#LIST p.url {
+  color :#7f58a1;
+  text-align: center;
+}
+
+#LIST fieldset.chats {
+  height : calc(100% - 234px);
+  /* overflow-y : auto; 120px*/
+  overflow : auto;
+  background-color: rgba(0,0,0,0.6);
+  border-color: rgba(0,0,0,0.6);
+  margin : 15px;
+}
+
+
+#LIST fieldset.response {
+  margin : 5px;
+  height : calc(100% - 40px);*/
+  /*background-color : rgba(0,0,0,0.5);
+  /* overflow-y : auto; 120px*/
+}
+
+
+#LIST fieldset.inputs {
+  background-color : rgba(0,0,0,0.5);
+  border-color: #ffa5f2;
+  /* overflow-y : auto; 120px*/
+}
+
+#LIST fieldset.w100 {
+  width : calc(100% - 60px);
+  margin-bottom : 0;
+}
+
+#LIST img {
+  width : 95%;
+}
+
+#LIST select {
+  float : left;
+}
+
+/*
+#LIST input[type="range"] {
+  height: 48px;
+}
+
+#LIST fieldset input[type="range"]{
+  width : 100%;
+}
+*/
+
+#LIST .desc {
+  color : white;
+}
+
+#LIST fieldset {
+  float : left;
+}
+
+#LIST fieldset p {
+  text-align: center;
+}
+
+#LIST fieldset {
+  text-align: center;
+}
+
+#LIST .w45 {
+  width : 46%;
+  text-align: left;
+}
+
+#LIST .w30 {
+  width: 30% !important;
+}
+
+
+
+#LIST .inner {
+  float : left;
+  margin : 5px;
+}
+
+#LIST .workflow button {
+  margin-top : 10px;
+}

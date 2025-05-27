@@ -1,0 +1,243 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="IMAGE">
+      <section>
+        <div class="resource">
+          <!--
+          <div class="header">
+            <i class="fa-solid fa-image"></i> Images
+          </div>
+          -->
+          <ul name="files"> 
+            <div class='col' name="col1"></div>
+            <div class='col' name="col2"></div>                                             
+          </ul>
+        </div>
+        <div class="workflow">
+                      <!--
+          <div class="header">
+            <button onclick="$(event).change('txt')">
+              Text-Image
+            </button>
+            <button onclick="$(event).change('img')">
+              Image-Image
+            </button>
+            <button onclick="$(event).change('draw')">
+              Draw-Image
+            </button>
+            <i class="fa-regular fa-layer-plus"></i> Generator
+          </div>
+          -->
+            <div class="ww100" name="o_text">
+              <div class="left w66">
+                <fieldset class='output' name="output" ondrop="$(event).dropHandler(event)" ondragover="$(event).dragOverHandler(event)"> 
+                  <button class="remove" onclick="$(event).clear()"><i class="fa-solid fa-trash"></i></button>
+                  <button class="file" onclick="$(event).image()"><i class="fa-solid fa-folder-open"></i></button>
+                  <button class="camera" onclick="$(event).camera()"><i class="fa-solid fa-camera"></i></button>
+           
+                  <video controlsList="nodownload" class='video' id="i_camera" style="display:none;" autoplay></video>
+                  <img id='i_img' class="img" src="/web/image/import.gif" onclick="$(event).selectMenu(event)"> 
+                  
+                  <img name="i_s_0" class="img square" style="display:none" onclick="$(event).selectMenu(event)"/>
+                  <img name="i_s_1" class="img square" style="display:none" onclick="$(event).selectMenu(event)"/>
+                  <img name="i_s_2" class="img square" style="display:none" onclick="$(event).selectMenu(event)"/>
+                  <img name="i_s_3" class="img square" style="display:none" onclick="$(event).selectMenu(event)"/>
+
+                  <img name="i_p_0" class="img portrait" style="display:none" onclick="$(event).selectMenu(event)"/>
+                  <img name="i_p_1" class="img portrait" style="display:none" onclick="$(event).selectMenu(event)"/>
+
+                  <img name="i_l_0" class="img landscape" style="display:none" onclick="$(event).selectMenu(event)"/>
+                  <img name="i_l_1" class="img landscape" style="display:none" onclick="$(event).selectMenu(event)"/>                  
+
+                  <input id='i_gallary' type="file" accept="image/*" hidden onchange="$(event).process()">                  
+                </fieldset>
+              </div>
+              <div class="w33">
+                <fieldset>
+                  <legend><span name="ratio">Ratio</span> *</legend>
+                  <input id="i_align_bottom" type="radio" name="i_style" value="512|512" onclick="$(event).resolution(512,512)" checked>
+                  <label class='w33' for="i_align_bottom">
+                    <i class="fa-regular fa-square"></i> 1:1  
+                  </label>  
+                  <input id="i_align_top" type="radio" name="i_style" value="512|896" onclick="$(event).resolution(512,896)">
+                  <label class='w33' for="i_align_top">
+                    <i class="fa-regular fa-mobile-notch"></i> 9:16
+                  </label>
+                  <input id="i_align_middle" type="radio" name="i_style" value="896|512" onclick="$(event).resolution(896,512)">
+                  <label class='w33' for="i_align_middle">
+                    <i class="fa-regular fa-rectangle-wide"></i> 16:9
+                  </label>                     
+                </fieldset> 
+                <fieldset class="model">
+                  <legend><span name="model">Model</span> *</legend> 
+                  <!--
+                  <input id="i_ani" type="radio" name="i_model" value="anime" checked>
+                  <label class='w25' for="i_ani">
+                    <img src="/image/model_anime.png" height="100%" style="float:center;">
+                  </label>
+                  -->     
+                  <input id="i_story" type="radio" name="i_model" value="story">
+                  <label class='w33' for="i_story">
+                    <img src="/web/image/model_story.png" height="100%" style="float:left;">
+                    <span name="anim">Anime</span>
+                  </label>                                                   
+                  <input id="i_disney" type="radio" name="i_model" value="disney" checked>
+                  <label class='w33' for="i_disney">
+                    <img src="/web/image/model_disney.png" height="100%" style="float:left;">
+                    <span name="disney">Disney</span>
+                  </label>
+                  <input id="i_photo" type="radio" name="i_model" value="real">
+                  <label class='w33' for="i_photo">
+                   <img src="/web/image/model_real.png" height="100%" style="float:left;">
+                    <span name="real">Real</span>
+                  </label>                     
+                </fieldset>                         
+                <fieldset class="prompt"> 
+                  <textarea type="text" name='prompt' placeholder="input your prompt" rows="3"></textarea>
+                  <div name='option' class="ww100" style="height: 20%;overflow-y: auto;margin-top:10px;margin-bottom:10px">
+                    <button class="example" onclick="$(event).generate('눈 내리는 마을과 산타클로스','real')">
+                      <span name="kpop">눈 내리는 마을과 산타클로스</span>
+                    </button>                  
+                    <button class="example" onclick="$(event).generate('크리스마스 파티를 하고 있는 웃는 가족','real')">
+                      <span name="kpop">크리스마스 파티를 하고 있는 웃는 가족</span>
+                    </button>
+                    <button class="example" onclick="$(event).generate('눈 내리는 풍경의 크리스마스 트리','anime')">
+                      <span name="classic">눈 내리는 풍경의 크리스마스 트리</span>
+                    </button>            
+                    <button class="example" onclick="$(event).generate('저녁식사를 하며 웃고있는 가족','real')">
+                      <span name="piano">저녁식사를 하며 웃고있는 가족</span>
+                    </button>     
+                    <button class="example" onclick="$(event).generate('데이트를 즐기고 있는 젊은 커플','story')">
+                      <span name="jazz">데이트를 즐기고 있는 젊은 커플</span>
+                    </button>                                  
+                    <button class="example" onclick="$(event).generate('바닷가에서 산책하고 있는 어린아이들','disney')">
+                      <span name="rain">바닷가에서 산책하고 있는 어린아이들</span>
+                    </button>                                    
+                    <button class="example" onclick="$(event).generate('비행기 조종을 하는 멋진 캡틴','anime')">
+                      <span name="talk">비행기 조종을 하는 멋진 캡틴</span>
+                    </button>                  
+                  </div>                  
+                </fieldset>           
+                <fieldset class="prompt choice"> 
+                  <legend><span name="negative">Negative prompt</span></legend>
+                  <textarea type="text" name='neg_prompt' placeholder="input your prompt" rows="3" style="height:10%;"></textarea>
+                </fieldset>  
+                <div name="option" class="ww100">
+                  <div class="ww50">
+                    <fieldset  class="choice">
+                      <legend><span name="multi">Multi</span></legend>
+                      <input id="i_nsfw_0" type="radio" name="i_filter" value="1">
+                      <label class='w48' for="i_nsfw_0">
+                        <span name="on">On</span> 
+                      </label>  
+                      <input id="i_nsfw_1" type="radio" name="i_filter" value="0" checked>
+                      <label class='w48' for="i_nsfw_1">
+                        <span name="off">Off</span>
+                      </label>   
+                    </fieldset>
+                  </div>
+                  <div class="ww50">
+                    <fieldset class="choice">
+                      <legend><span name="upscale">Upscale</span></legend>
+                      <input id="i_upscale_0" type="radio" name="i_upscale" value="1">
+                      <label class='w48' for="i_upscale_0">
+                        <span name="on">On</span> 
+                      </label>  
+                      <input id="i_upscale_1" type="radio" name="i_upscale" value="0" checked>
+                      <label class='w48' for="i_upscale_1">
+                        <span name="off">Off</span>
+                      </label>   
+                    </fieldset>
+                  </div>                   
+                  <!--
+                  <div class="ww50">
+                    <fieldset>
+                      <legend><span name="quality">Quality</span></legend>
+                      <input id="i_enhance_0" type="radio" name="i_enhance" value="1" checked>
+                      <label class='w48' for="i_enhance_0">
+                        <span name="on">On</span> 
+                      </label>  
+                      <input id="i_enhance_1" type="radio" name="i_enhance" value="0">
+                      <label class='w48' for="i_enhance_1">
+                        <span name="off">Off</span>
+                      </label>                    
+                    </fieldset>                
+                  </div>
+                  <fieldset>
+                    <legend><span name="step">Steps</span></legend>
+                    <input id="i_step_0" type="radio" name="i_steps" value="10">
+                    <label class='w33' for="i_step_0">
+                      <span name="draft">Draft (Fast)</span>
+                    </label>  
+                    <input id="i_step_1" type="radio" name="i_steps" value="20" checked>
+                    <label class='w33' for="i_step_1">
+                      <span name="good">Good (Normal)</span>
+                    </label>
+                    <input id="i_step_2" type="radio" name="i_steps" value="30">
+                    <label class='w33' for="i_step_2">
+                      <span name="best">Best (Slow)</span>
+                    </label>                     
+                  </fieldset>
+                  <fieldset>
+                    <legend><span name="guide">Guidance</span></legend>
+                    <input id="i_guide_0" type="radio" name="i_guide" value="3">
+                    <label class='w33' for="i_guide_0">
+                      <span name="low">Low</span>
+                    </label>  
+                    <input id="i_guide_1" type="radio" name="i_guide" value="5" checked>
+                    <label class='w33' for="i_guide_1">
+                      <span name="normal">Normal</span>
+                    </label>
+                    <input id="i_guide_2" type="radio" name="i_guide" value="7">
+                    <label class='w33' for="i_guide_2">
+                      <span name="high">High</span>
+                    </label>                                       
+                  </fieldset>            
+                  <fieldset>
+                    <legend><span name="upscale">Upscale</span></legend>
+                    <input id="i_upscale_0" type="radio" name="i_upscale" value="0" checked>
+                    <label class='w33' for="i_upscale_0">
+                      <span name="none">None</span>  
+                    </label>  
+                    <input id="i_upscale_1" type="radio" name="i_upscale" value="0.5">
+                    <label class='w33' for="i_upscale_1">
+                      <span name="normal">Normal</span>
+                    </label>
+                    <input id="i_upscale_2" type="radio" name="i_upscale" value="0.9">
+                    <label class='w33' for="i_upscale_2">
+                      <span name="high">High</span>
+                    </label>                     
+                  </fieldset>            
+                -->       
+                </div>
+                <div class="ww100 btn">
+                                  
+                  <button class="gen" onclick="$(event).generate()">
+                    <i class="fa-solid fa-wand-sparkles"></i> <span name="generate">Generate Image</span>
+                  </button>
+                  <button class="mic" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+<!--
+                  <div class="ww80">
+                    <button class="gen" onclick="$(event).generate()">
+                      <i class="fa-solid fa-wand-sparkles"></i> <span name="generate">Generate</span>
+                    </button>
+                  </div>
+                  <div class="ww20">
+                    <button class="speech mic" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+                  </div>
+                -->
+                </div>                                          
+            </div>
+          </div>                                            
+        </div>                   
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

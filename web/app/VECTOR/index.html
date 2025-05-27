@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="VECTOR">
+      <section>
+        <div class="resource">
+          <ul name="files">
+                                                                                                             
+          </ul>
+        </div>
+        <div class="workflow">
+          <div class="ww100" style="margin-bottom: 12px;">
+            <div class="ww80">
+              <fieldset class="prompt">
+                <input type="text" class='w100' name='url' placeholder="여기에 참조할 url 을 입력해 주세요." onkeypress="$(event).keypress()"></input>
+              </fieldset>
+            </div>
+            <div class="ww20">
+              <fieldset>
+                <select name='size'>
+                  <option value="512">512</option>
+                  <option value="1024">1024</option>
+                  <option value="2048">2048</option>
+                </select>
+              </fieldset>
+            </div>
+          </div>  
+          <fieldset class="output">
+            <div id="waveform2">
+              <ul name='docs' class="w100">
+              
+              </ul> 
+
+            </div>           
+          </fieldset>                                            
+          
+          <div class="ww100">
+            <fieldset class="prompt">
+              <legend>검색어</legend>                   
+              <!--<input type="text" name='pos_prompt' placeholder="input text" rows="3">-->
+              <textarea type="text" name='pos_prompt' placeholder="검색할 내용을 입력하세요." rows="3"></textarea>
+              <!--
+              <div name='option' style="width: 30%;float: left;overflow-y: auto;height: 10%;">
+                <button class="example" onclick="$(event).generate('K-pop 스타일의 아름다운 비트음악','music')">
+                  <span name="kpop">K-pop 스타일의 아름다운 비트음악</span>
+                </button>
+                <button class="example" onclick="$(event).generate('베토벤 영웅 교향곡 스타일의 클래식 음악','music')">
+                  <span name="classic">베토벤 영웅 교향곡 스타일의 클래식 음악</span>
+                </button>            
+                <button class="example" onclick="$(event).generate('유키구라모토의 아름다운 피아노 선율','music')">
+                  <span name="piano">유키구라모토의 아름다운 피아노 선율</span>
+                </button>     
+                <button class="example" onclick="$(event).generate('루이 암스트롱 풍의 미국식 재즈 음악','music')">
+                  <span name="jazz">루이 암스트롱 풍의 미국식 재즈 음악</span>
+                </button>                   
+                <br/>                 
+                <button class="example" onclick="$(event).generate('천둥 치켜 비가 내리는 소리','sound')">
+                  <span name="rain">천둥 치켜 비가 내리는 소리</span>
+                </button>                                    
+                <button class="example" onclick="$(event).generate('아이들이 교실에서 떠드는 소리','sound')">
+                  <span name="talk">아이들이 교실에서 떠드는 소리</span>
+                </button>                  
+              </div>
+              -->
+            </fieldset>
+            <!--
+            <div class="ww50">
+
+            </div>
+            <div class="ww50">
+              <fieldset>     
+                <legend>Negative Prompt</legend>                   
+                <input type="text" name='neg_prompt' placeholder="input text" rows="3">
+              </fieldset>  
+            </div>
+            -->
+          </div>    
+          <div class="ww100">
+            <button class="w100 gen" onclick="$(event).generate()">
+              <i class="fa-solid fa-wand-sparkles"></i> 정보 조회하기
+            </button>
+            <!--
+            <div class="ww80">
+            </div>
+            <div class="ww20">
+              <button class="speech" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+            -->
+          </div>                                          
+        </div>                   
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

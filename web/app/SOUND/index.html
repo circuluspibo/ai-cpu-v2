@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="SOUND">
+      <section>
+        <div class="resource">
+          <!--
+          <div class="header">
+            <i class="fa-solid fa-music"></i> Sound
+          </div>
+          -->
+          <ul name="files">
+            <!--
+            <li> 
+              <fieldset>
+                <p>안녕 나는 데이비드라고 해 만나서 반가워.</p>   
+                <audio controlsList="nodownload"  controls src="/image/tts.mp3"></audio>
+                </p>
+              </fieldset>
+            </li>
+            -->                                                                                                                      
+          </ul>
+        </div>
+        <div class="workflow">
+          <!--
+          <div class="header">
+            <i class="fa-regular fa-layer-plus"></i>  Generator
+          </div>
+          -->
+          <fieldset class="output">
+            <button class="remove" onclick="$(event).clear()"><i class="fa-solid fa-trash"></i></button>
+            <button class="file" onclick="$(event).file()"><i class="fa-solid fa-folder-open"></i></button>
+            <button class="camera" onclick="$(event).camera()"><i class="fa-solid fa-camera"></i></button>
+            <input id='s_gallary' type="file" accept="image/*" hidden onchange="$(event).process()"> 
+            <div id="waveform2"></div>
+            <video controlsList="nodownload" class='video' id="s_camera" style="display:none;" autoplay></video>
+            <img id='s_img' class="img" src="/web/image/import.gif" style="display:none;"> 
+            <button class='w25' onclick="$(event).play()">
+              <i class="fa-solid fa-play"></i> <span name="play">Play</span>
+            </button>
+            <button class='w25' onclick="$(event).pause()">
+              <i class="fa-solid fa-pause"></i> <span name="pause">Pause</span>
+            </button>
+            <button class='w25' onclick="$(event).stop()">
+              <i class="fa-solid fa-stop"></i> <span name="stop">Stop</span>
+            </button>
+            <button class='w25' onclick="$(event).download()">
+              <i class="fa-solid fa-download"></i> <span name="down">Download</span>
+            </button>            
+          </fieldset>
+          <div class="ww100">
+            <div class="ww30">
+              <fieldset>
+                <legend><span name="model">Model</span> *</legend>
+                <input id="m_music" type="radio" name="s_model" value="music" checked>
+                <label class='w48' for="m_music">
+                  <i class="fa-solid fa-music"></i> <span name="music">Music</span>
+                </label>  
+                <input id="m_sound" type="radio" name="s_model" value="sound">
+                <label class='w48' for="m_sound">
+                  <i class="fa-solid fa-volume"></i> <span name="sound">Sound</span>
+                </label>                     
+              </fieldset> 
+            </div>
+            <div class="ww70">
+              <fieldset> 
+                <legend><span name="len">Length</span> (<span name="length">15</span> sec)</legend>
+                <input type="range" min="1" max="30" value="15" name="length" onchange="$(event).changeLength()"></input>
+              </fieldset>                  
+            </div>
+          </div>                                              
+          <!--
+          <div>
+            <div class="ww20"> 
+              <fieldset>
+                <legend><span name="quality">Quality</span></legend>
+                <input id="s_enhance_0" type="radio" name="s_enhance" value="1" checked>
+                <label class='w48' for="s_enhance_0">
+                  <span name="on">On</span> 
+                </label>  
+                <input id="s_enhance_1" type="radio" name="s_enhance" value="0">
+                <label class='w48' for="s_enhance_1">
+                  <span name="off">Off</span>
+                </label>                    
+              </fieldset>  
+            </div>
+            <div class="ww40"> 
+              <fieldset>
+                <legend><span name="step">Steps</span></legend>
+                <input id="s_step_0" type="radio" name="s_steps" value="10">
+                <label class='w33' for="s_step_0">
+                  <span name="draft">Draft (Fast)</span> 
+                </label>  
+                <input id="s_step_1" type="radio" name="s_steps" value="20" checked>
+                <label class='w33' for="s_step_1">
+                  <span name="good">Good (Normal)</span>
+                </label>
+                <input id="s_step_2" type="radio" name="s_steps" value="30">
+                <label class='w33' for="s_step_2">
+                  <span name="best">Best (Slow)</span>
+                </label>                     
+              </fieldset>
+            </div>
+            <div class="ww40">
+              <fieldset>
+                <legend><span name="guide">Guidance</span></legend>
+                <input id="s_guide_0" type="radio" name="s_guide" value="2.5" checked>
+                <label class='w33' for="s_guide_0">
+                  <span name="normal">Normal</span>  
+                </label>  
+                <input id="s_guide_1" type="radio" name="s_guide" value="5">
+                <label class='w33' for="s_guide_1">
+                  <span name="high">High</span>
+                </label>
+                <input id="s_guide_2" type="radio" name="s_guide" value="9">
+                <label class='w33' for="s_guide_2">
+                  <span name="extreme">Extream</span>
+                </label>                     
+              </fieldset> 
+            </div>                      
+          <div>
+          -->
+          <div class="ww100">
+            <fieldset class="prompt">                   
+              <!--<input type="text" name='pos_prompt' placeholder="input text" rows="3">-->
+              <textarea type="text" name='pos_prompt' placeholder="input your prompt" rows="3"></textarea>
+              <div name='option' style="width: 30%;float: left;overflow-y: auto;height: 14%;">
+                <button class="example" onclick="$(event).generate('K-pop 스타일의 아름다운 비트음악','music')">
+                  <span name="kpop">K-pop 스타일의 아름다운 비트음악</span>
+                </button>
+                <button class="example" onclick="$(event).generate('베토벤 영웅 교향곡 스타일의 클래식 음악','music')">
+                  <span name="classic">베토벤 영웅 교향곡 스타일의 클래식 음악</span>
+                </button>            
+                <button class="example" onclick="$(event).generate('유키구라모토의 아름다운 피아노 선율','music')">
+                  <span name="piano">유키구라모토의 아름다운 피아노 선율</span>
+                </button>     
+                <button class="example" onclick="$(event).generate('루이 암스트롱 풍의 미국식 재즈 음악','music')">
+                  <span name="jazz">루이 암스트롱 풍의 미국식 재즈 음악</span>
+                </button>                   
+                <br/>                 
+                <button class="example" onclick="$(event).generate('천둥 치켜 비가 내리는 소리','sound')">
+                  <span name="rain">천둥 치켜 비가 내리는 소리</span>
+                </button>                                    
+                <button class="example" onclick="$(event).generate('아이들이 교실에서 떠드는 소리','sound')">
+                  <span name="talk">아이들이 교실에서 떠드는 소리</span>
+                </button>                  
+              </div>
+            </fieldset>
+            <!--
+            <div class="ww50">
+
+            </div>
+            <div class="ww50">
+              <fieldset>     
+                <legend>Negative Prompt</legend>                   
+                <input type="text" name='neg_prompt' placeholder="input text" rows="3">
+              </fieldset>  
+            </div>
+            -->
+          </div>    
+          <div class="ww100">
+            <button class="w100 gen" onclick="$(event).generate()">
+              <i class="fa-solid fa-wand-sparkles"></i> <span name="generate">Generate Sound</span>
+            </button>
+            <!--
+            <div class="ww80">
+            </div>
+            <div class="ww20">
+              <button class="speech" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+            -->
+          </div>                                          
+        </div>                   
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

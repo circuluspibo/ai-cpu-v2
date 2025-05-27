@@ -1,0 +1,165 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
+@import url("https://fonts.googleapis.com/earlyaccess/notosanskr.css");
+
+html {
+  background-color: rgb(17,24,39);/*#00201b;*/
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+body {
+  width : 100%;
+  height : 100%;
+  /*
+  background-image: url('https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4wwtC?ver=b327');
+  background-attachment: fixed;
+  */
+  cursor: url('../icon/pointer.png'), default;
+  margin : 0;
+  padding : 0;
+  font-size: 36px;
+  color : white;
+  overflow: auto;
+}
+
+section {
+  position : absolute;
+  width : 100%;
+  height : 100%;
+}
+
+article {
+  position : absolute;
+  width : 100%;
+  height : 100%;
+}
+
+article#test {
+  background-color: black;
+}
+
+article#test2 {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/*
+div.header {
+  position : absolute;
+  width : 100%;
+  height : 100px;
+}
+*/
+
+#main div.main {
+  position : absolute;
+  width : 100%;
+  height : 100%;
+  overflow: auto;
+}
+
+
+dt {
+  margin-left : 24px;
+}
+
+span[name=title] {
+  position : absolute;
+  left : 24px;
+  top : 24px;
+}
+
+
+span[name=user] {
+  position : absolute;
+  right : 24px;
+  top : 24px;
+}
+
+span[name=time] {
+  position : absolute;
+  left : 45%;
+  top : 24px;
+}
+
+span.main {
+  font-size: 2em;
+  position: absolute;
+  left : calc(50% - 80px);
+  top : 50%;
+  text-align: center;
+  background-color : rgba(0,0,0,0.6);
+  padding : 16px;
+}
+
+button.i {
+  font-family: "Noto Sans KR", sans-serif;
+  margin : 0;
+  margin-right : 16px;
+  padding : 0;
+  font-size: 36px;
+  background-color : rgba(255,255,255,0.15);
+  border : none;
+  width : 18.5%;
+  height : 280px;
+  color : white;
+  cursor: url('../icon/pointer_click.png'), pointer;
+  border-radius: 25px;
+}
+
+button.i p {
+  margin : 0;
+  padding-bottom : 16px;
+}
+
+button.i img {
+  /*filter: invert(100%) sepia(30%) saturate(3461%) hue-rotate(321deg);*/
+  width : 160px;
+  height : 160px;
+}
+
+button.i:hover {
+  background-color : rgba(17, 120, 146, 0.5);
+  color : rgb(12, 183, 226);
+  transition:background-color 0.5s;
+  /*font-size: 1.5em;*/
+  /* transition:width 2s, height 2s, background-color 2s, transform 2s; */
+ /* transition:background-color 0.5s, font-size 0.5s, transform 2s;
+  */
+}
+
+::-webkit-scrollbar {
+  width: 10px; /*스크롤바의 너비*/
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.5); /*스크롤바의 색상*/
+  background-clip: padding-box;
+  border: 4px solid transparent;
+  border-top-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent; /*스크롤바 트랙 색상*/
+}
+
+.c_green_3 { color : #22a923 }
+.c_green_2 { color : #9be186 }
+.c_green_1 { color : #c9fda1 }
+
+.c_pupple_3 { color : #9849b6 }
+.c_pupple_2 { color : #c8b1ff }
+.c_pupple_1 { color : #eaccfe }
+
+.c_red_3 { color : #b22729 }
+.c_red_2 { color : #ff9b87 }
+.c_red_1 { color : #fec1a6 }
+
+.c_blue_3 { color : #2870b3 }
+.c_blue_2 { color : #96cdfc }
+.c_blue_1 { color : #a8e3f1 }
+
+.c_yellow_3 { color : #b26d26 }
+.c_yellow_2 { color : #f7ae4e }
+.c_yellow_1 { color : #cfaf61 }
+

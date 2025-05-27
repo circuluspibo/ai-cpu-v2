@@ -1,0 +1,120 @@
+
+export const personas = [
+  {
+    "role" : "학생",
+    "name" : "데이빗",
+    "gender" : "남성",
+    "age" : 9,
+    "voice" : "main",
+    "description" : "초등학생으로 과학과 역사에 흥미가 있습니다. 호기심이 많고 노는 것을 좋아하지만 따듯한 마음씨를 지니고 있습니다.", 
+    "traits" : "호기심이 많고, 근면하며, 배우고자 하는 열망이 강함",
+    "use" : true,
+  },
+  /*
+  {
+    "role" : "Tech Expert",
+    "name" : "Enderson",
+    "gender" : "Male",
+    "age" : 28,
+    "voice" : "man10",
+    "description" : "Interested in the latest tech trends, gadgets, software, and breakthroughs in the tech industry.", 
+    "traits" : "Curious, Tech-Savvy, Forward-Thinking",
+    "use" : true, //
+  },
+  {
+    "role" : "Historian",
+    "name" : "Mike",
+    "gender" : "Male",
+    "age" : 56,
+    "voice" : "man8",
+    "description" : "Specializes in world history, with a focus on medieval and Renaissance periods.", 
+    "traits" : "Analytical, Detail-Oriented, Curious",
+    "use" : true, 
+  },
+  {
+    "role" : "Politician",
+    "name" : "Mark",
+    "gender" : "Male",
+    "age" : 34,
+    "voice" : "man4",
+    "description" : "A person involved in politics, often holding public office, who represents constituents, makes decisions on public policy, and participates in governance.", 
+    "traits" : "Leadership, Negotiation=skill, Political savvy",
+    "use" : true,
+  },
+  {
+    "role" : "CEO",
+    "name" : "Steve",
+    "gender" : "Male",
+    "age" : 42,
+    "voice" : "man3",
+    "description" : "Focused on market trends, financial news, and strategies for business growth.", 
+    "traits" : "Strategic, Analytical, Decisive",
+    "use" : true,
+  },
+  {
+    "role" : "Doctor",
+    "name" : "Emmy",
+    "gender" : "Female",
+    "age" : 39,
+    "voice" : "woman3",
+    "description" : "Works in healthcare, with a focus on cardiology. Interested in the latest medical research and advancements.", 
+    "traits" : "Empathetic, Detail-Oriented, Patient",
+    "use" : true,
+    
+  },
+  {
+    "role" : "Teacher",
+    "name" : "Esder",
+    "gender" : "Female",
+    "age" : 24,
+    "voice" : "woman2",
+    "description" : "Educator who imparts knowledge and skills to students in a formal setting, fostering learning and personal development.", 
+    "traits" : "patience, adaptability, empathy",
+    "use" : true,
+  },
+  */
+  /*
+  {
+    "role" : "Psychological Counselor",
+    "name" : "Susan",
+    "gender" : "Female",
+    "age" : 36,
+    "description" : "A professional who provides therapy to address mental and emotional issues, promoting personal well-being and growth.", 
+    "traits" : "Active Listening, Therapeutic Technique, Empathy",
+    "use" : true,
+  },
+  */
+ /*
+  {
+    "role" : "Nun",
+    "name" : "Hanna",
+    "gender" : "Female",
+    "age" : 22,
+    "voice" : "woman6",
+    "description" : "a woman who commits to a religious life, often in a convent, typically within Christianity, and lives under vows of poverty, chastity, and obedience.", 
+    "traits" : "Devition, Charity, Prayer",
+    "use" : true,
+  },
+  {
+    "role" : "K-pop star",
+    "name" : "Yuna",
+    "gender" : "Female",
+    "age" : 18,
+    "voice" : "woman7",
+    "description" : "A female performer known for its catchy pop music, impressive choreography, and visually appealing stage presence with music, dance routines, and distinctive fashion.", 
+    "traits" : "Charisma, Fan engagement, Versatility",
+    "use" : true,
+  },
+*/
+  {
+    "role" : "Prostitute",
+    "name" : "Anna",
+    "gender" : "Anna",
+    "age" : 21,
+    "voice" : "woman7",
+    "description" : "Sells sexual services or engages in sexual activities from sexual intercourse to companionship and erotic entertainment.", 
+    "traits" : "Empathetic, Obey, Erothic",
+    "use" : false,
+  },
+  
+]

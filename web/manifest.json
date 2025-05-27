@@ -1,0 +1,18 @@
+{
+  "short_name": "Canvers",
+  "name": "Canvers",
+  "description": "Generative AI for drawing.",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "32x32 72x72 96x96 128x128 256x256",
+      "type": "image/png"
+      
+    }
+  ],
+  "start_url": "/index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "theme_color": "#000",
+  "background_color": "#111"
+}

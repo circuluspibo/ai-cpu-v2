@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/all.min.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <title>Canvers</title>
+  </head>
+  <body>
+    <main id="TRANS">
+      <section>
+        <div class="resource">
+          <!--
+          <div class="header">
+            <i class="fa-regular fa-file-lines"></i> Text
+          </div>
+          -->
+          <ul name="files">
+            <!--
+            <li> 
+              <fieldset>
+                <p>안녕 나는 데이비드라고 해 만나서 반가워.</p>   
+                <audio controlsList="nodownload"  controls src="/image/tts.mp3"></audio>
+                </p>
+              </fieldset>
+            </li>
+            -->                                                                                                                      
+          </ul>
+        </div>
+        <div class="workflow">
+          <!--
+          <div class="header">
+            <i class="fa-regular fa-layer-plus"></i>  Generator
+          </div>
+          -->
+          <div class="ww100">
+            <div class="ww50">
+              <fieldset>
+                <legend>Translate to</legend>  
+                <select class="w100" name="lang" onchange="$(event).changeLang()" style="background-color: #ece3ff;">
+                  <option value="auto" selected>Auto</option>
+                  <option value="en">English</option>
+                  <option value="ko">Korean</option>
+                </select>                     
+              </fieldset> 
+              <fieldset>     
+                <legend>Prompt *</legend>                   
+                <textarea name='input'></textarea>
+              </fieldset>
+              <div class="ww100">
+                <div class="ww80">
+                  <button class="w100 gen" onclick="$(event).generate()">
+                    <i class="fa-solid fa-wand-sparkles"></i> Generate Text
+                  </button> 
+                </div>
+                <div class="ww20">
+                  <button class="speech" onclick="$(event).listen()"><i class="fa-solid fa-microphone"></i></button>
+                </div>
+              </div>  
+            </div>
+            <div class="ww50">
+              <fieldset>     
+                <legend>Output</legend>                   
+                <textarea name='output'>Input prompt left side...</textarea>
+              </fieldset> 
+            </div>                   
+          </div>                                      
+        </div>                   
+      </section>      
+    </main>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

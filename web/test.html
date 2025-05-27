@@ -1,0 +1,144 @@
+<html>
+  <head>
+    <style>
+      .panel {
+  position : absolute;
+  z-index : 1;
+  width : 512px;
+  height :896px; 
+}
+
+img {
+  position : absolute;
+}
+
+.area {
+  /* user-select: text; */
+  color : white;
+  font-size : large;
+  position : relative;
+  resize: both;
+  z-index : 2;
+  background-color : transparent;
+  /* border : 1px solid white; */
+  text-align : center;
+  max-width : 512px;
+  min-width : 100px;
+  min-height : 64px;
+  overflow : auto;
+}
+
+.clean {
+  border : 1px solid transparent;
+}
+
+button {
+  position :absolute;
+  top :900px;
+}
+    </style>
+  </head>
+  <body>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <div id='panel' class='panel'>
+      <div class='area' id='drag' contenteditable='true' >test</div>
+      <div class='area' id='drag2' contenteditable='true' >test</div>
+    </div>
+    <img src='https://canvers.net/v1/v/media/6571d2abc7f2932c80ff6ae4'>
+    <button onclick='test()'>Captuer</button>
+    <script>
+      dragElement(document.getElementById("drag"));
+      dragElement(document.getElementById("drag2"));
+
+async function test(){
+  document.getElementById("drag").classList.add('clean')
+ const canvas = await html2canvas(document.getElementById("panel"),{backgroundColor:null})
+    // Canvas를 PNG 데이터 URL로 변환합니다.
+  
+  var imageDataURL = canvas.toDataURL('image/png');
+
+  // 변환된 이미지를 표시할 곳에 이미지 엘리먼트를 추가합니다.
+  //var img = document.createElement('img');
+  ///img.src = imageDataURL;
+  //document.getElementById('pngContainer').appendChild(img);
+
+  console.log('img',imageDataURL)
+
+  
+  // (선택 사항) PNG 파일로 다운로드하려면 다음 코드를 사용할 수 있습니다.
+  var a = document.createElement('a');
+  a.href = imageDataURL;
+  a.download = 'converted-image.png';
+  a.click();
+
+ // document.getElementById("drag").classList.remove('clean')
+
+}
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  elmnt.onmousedown = dragMouseDown;
+  let isResize = false
+  let to = 0
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    //e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function timeout(){
+    isResize = false
+  }
+
+  var ro = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      const cr = entry.contentRect;
+      console.log(entry)
+      isResize = true
+      clearTimeout(to)
+      to = setTimeout(timeout, 50)
+      console.log('Element:', entry.target);
+      console.log(`Element size: ${cr.width}px x ${cr.height}px`);
+      console.log(`Element padding: ${cr.top}px ; ${cr.left}px`);
+    }
+  });
+
+  // Observe one or multiple elements
+  ro.observe(elmnt);
+
+  function elementDrag(e) {
+  	console.log('event',e)
+
+    if(isResize == true){
+      console.log('cancel')
+      return
+    }
+
+    e = e || window.event;
+    //e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+    </script>
+  </body>
+</html>
+

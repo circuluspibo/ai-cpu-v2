@@ -1,0 +1,18 @@
+{
+  "home" : "홈 대화",
+  "chat" : "텍스트",
+  "trans" : "번역",
+  "voice" : "음성",
+  "sound" : "음향",
+  "image" : "이미지",
+  "human" : "가상인간",
+  "face" : "얼굴",
+  "assist" : "AI비서",
+  "counsel" : "상담가",
+  "teach" : "선생님",
+  "clip" : "클립",
+  "close" : "닫기",
+  "imitate" : "모방",
+  "vector" : "벡터DB",
+  "resume" : "이력서"
+}

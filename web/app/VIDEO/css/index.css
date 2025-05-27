@@ -1,0 +1,222 @@
+#VIDEO section {
+  /*
+  background-color: rgba(0,40,57,0.6);
+  */
+  width : 100%;
+  height : 100%;
+}
+
+#VIDEO .menu {
+  background-color: rgba(0,81,114,0.6);
+  width : 64px;
+  height : 100%;
+}
+
+#VIDEO .w66 {
+  width : 67% !important;
+}
+
+#VIDEO .resource {
+  /*
+  background-color: rgba(0,40,57,0.6);
+  */
+  width : calc(25% - 64px);
+  height : 100%;
+}
+
+#VIDEO .resource ul {
+  float : left;
+  height : 100%;
+  overflow-y: scroll;
+}
+
+.ptro-wrapper {
+  top : 80px !important;
+  width : 46.4%;
+  bottom : 60px !important; 
+  left : unset;
+  right : unset;
+}
+
+.ptro-bar {
+  width : 46.4%;
+  bottom : 20px !important;
+}
+
+#VIDEO .left fieldset {
+  height : calc(100% - 48px) !important;
+}
+
+#VIDEO .resource .prompt {
+  width : 100%;
+  height : 192px;
+}
+
+#VIDEO .resource .prompt textarea {
+  width : 100%;
+  height : 128px;
+}
+
+#VIDEO .workflow {
+  width : 75%;
+  height : 100%;
+}
+
+#VIDEO .header button {
+  width : 10%;
+}
+
+#VIDEO .slide {
+  height: 72px;
+}
+
+#VIDEO fieldset[name=output]{
+  height: calc(100% - 128px);
+  text-align: center;
+  position: relative;
+}
+
+#VIDEO select, #VIDEO input[type="range"] {
+  margin : 10px;
+  width : calc(100% - 20px);
+
+}
+
+/*
+#VIDEO .output {
+  width : 40%;
+  height : 100%;
+  background-color: rgba(0,40,57,0.6);
+}
+*/
+
+/*
+#VIDEO button {
+  height : 64px;
+  background-color: transparent !important;
+}
+*/
+#VIDEO fieldset[name=output] {
+  
+  display: flex;
+  /*
+  background-color: #19083b;
+  */
+}
+
+#VIDEO fieldset[name=output] img {
+  margin: auto auto;
+  max-width: 100%;
+  max-height: 100%;
+  height: auto; 
+  width : auto;
+}
+
+#VIDEO div {
+  float : left;
+}
+
+#VIDEO .resource img {
+  width: calc(100% - 5px);
+  margin-left: 5px;
+}
+
+#VIDEO video {
+  border-radius: 10px;
+  max-height: 98%;
+  max-width : 98%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+
+#VIDEO .resource li {
+  float : left;
+  width : 100%;
+}
+
+#VIDEO div.item {
+  height : 160px;
+}
+
+#VIDEO div.caption {
+  width : 100%;
+}
+
+#VIDEO select.size {
+  width : 64px;
+}
+
+#VIDEO .item input[type=number] {
+  height : 100%;
+}
+
+#VIDEO select.font {
+  width : calc(100% - 494px);
+}
+
+#VIDEO .w64p {
+  width : 64px;
+}
+
+#VIDEO .color {
+  color : black;
+  background-color : white !important;
+  width : 48px;
+  height: 48px;
+}
+
+/*
+#VIDEO .output .video {
+  width : 94%;
+  padding:30px;
+  text-align: center;
+}
+*/
+
+#VIDEO .header {
+  width : 100%;
+  background-color : black;
+  height : 64px;
+  text-align: center;
+  line-height: 64px;
+}
+
+#VIDEO textarea {
+  border: 1px solid aquamarine;
+  font-size : 14px;
+  height : 18%;
+}
+
+#VIDEO .model label {
+  height : 64px !important;
+  line-height: 64px !important;
+}
+
+/*
+#VIDEO fieldset img {
+  width : 75%;
+}
+*/
+
+#VIDEO .image img{
+  height : 160px;
+}
+
+#VIDEO select {
+  float : left;
+}
+
+#VIDEO fieldset p {
+  text-align: center;
+}
+
+#VIDEO .selected {
+  filter: grayscale(100%);
+}
+
+#VIDEO .btn {
+  margin-top : 15px;
+}
