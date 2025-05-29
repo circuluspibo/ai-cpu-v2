@@ -62,11 +62,14 @@ model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
 #path_txt = snapshot_download(repo_id="circulus/Qwen3-1.7B-ko-ov-sym-int4")
-path_txt = "naver-hyperclovax/HyperCLOVAX-SEED-Text-Instruct-1.5B"
+path_txt = "dnotitia/Smoothie-Qwen3-1.7B"
 #pipe_txt = ov_genai.LLMPipeline(path_txt, "CPU")
-model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
+model_txt = Llama.from_pretrained(repo_id="rippertnt/Smoothie-Qwen3-1.7B-Q4_K_M-GGUF", filename="smoothie-qwen3-1.7b-q4_k_m.gguf", n_threads=4, verbose=False)
 token_txt =  AutoTokenizer.from_pretrained(path_txt)
 
+#path_txt = "kakaocorp/kanana-1.5-2.1b-instruct-2505"
+#model_txt = Llama.from_pretrained(repo_id="JJS0321/kanana-1.5-2.1b-instruct-2505-gguf", filename="kanana-2.3B-1.5-Q4_K_M.gguf", n_threads=4, verbose=False)
+#token_txt =  AutoTokenizer.from_pretrained(path_txt)
 
 #model_txt = Llama.from_pretrained(repo_id="rippertnt/Qwen3-0.6B-Q4_K_M-GGUF", filename="qwen3-0.6b-q4_k_m.gguf", n_threads=4, verbose=False)
 #token_txt = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")
