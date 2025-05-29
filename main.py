@@ -19,7 +19,6 @@ from pydantic import BaseModel, Field
 from iterator import IterableStreamer
 import numpy as np
 import openvino_genai as ov_genai
-#import onnxruntime_genai as og
 import onnxruntime as rt
 import utils
 import commons
@@ -48,7 +47,7 @@ class Param (BaseModel):
 class Chat(BaseModel):
   prompt : str
   lang : str = 'auto'
-  type : str = "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 다국어 인공지능 입니다. 젊은 톤의 대화체로 입력된 언어로 응답하세요." #" "당신은 데이비드라고 하는 10살 남자아이 성향의 유쾌하고 즐거운 인공지능입니다. 이모티콘도 잘 활용해서 젊은 말투로 대답하세요."
+  type : str = "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 로봇으로, 이모티콘도 활용해서 대화형식으로 대답하길 바래!"
   rag :  str = ''  
   temp : float = 0.5
   top_p : float = 0.92
@@ -62,10 +61,11 @@ token_en2ko = AutoTokenizer.from_pretrained("circulus/canvers-en2ko-v1")
 model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-ko2en-ct2-v1"), device="cpu")
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
-#from huggingface_hub import snapshot_download
-#model_txt = snapshot_download(repo_id="circulus/on-gemma-2-2b-it-ov-int4", filename="gemma-3-1b-it-Q4_K_M.gguf")
-#pipe_txt = ov_genai.LLMPipeline(model_txt, "CPU")
-#tk =  AutoTokenizer.from_pretrained(model_txt)
+#path_txt = snapshot_download(repo_id="circulus/Qwen3-1.7B-ko-ov-sym-int4")
+path_txt = "naver-hyperclovax/HyperCLOVAX-SEED-Text-Instruct-1.5B"
+#pipe_txt = ov_genai.LLMPipeline(path_txt, "CPU")
+model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
+token_txt =  AutoTokenizer.from_pretrained(path_txt)
 
 
 #model_txt = Llama.from_pretrained(repo_id="rippertnt/Qwen3-0.6B-Q4_K_M-GGUF", filename="qwen3-0.6b-q4_k_m.gguf", n_threads=4, verbose=False)
@@ -74,8 +74,8 @@ token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 #model_txt = Llama.from_pretrained(repo_id="unsloth/gemma-3-1b-it-GGUF", filename="gemma-3-1b-it-Q4_K_M.gguf", n_threads=4, verbose=False)
 #token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-1b-it")
 
-model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
-token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
+#model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
+#token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
 
 # n_gpu_layers=-1,
 
@@ -144,7 +144,7 @@ async def generate_text_stream(chat : Chat, isStream=True):
         if "choices" in chunk and chunk["choices"]:
             new_token =  chunk["choices"][0]["text"]
             if isStream:
-              #print(new_token)
+              print(new_token, end="", flush=True)
               yield new_token
               await asyncio.sleep(0) 
             elif "." in new_token or "\n" in new_token:
@@ -205,37 +205,36 @@ def stream_ko2en(prompts):
     elif idx < length - 1:
       yield "</br>"
 
-"""
-def process_stream(chat : Chat, isStream):
-	if chat.rag is not None and len(chat.rag) > 10:
-		chat.type=  f"{chat.type}\n그리고, 다음 내용을 참고하여 대답을 하되 잘 모르는 내용이면 모른다고 솔직하게 대답하세요.\ncontext\n{chat.rag}"
-	
-	prompt = token_txt.apply_chat_template([
-        {"role": "system", "content": f"{chat.type}"},
-        {"role": "user", "content": f"{chat.prompt}"}
-    ], tokenize=False,add_generation_prompt=True)
-	
-	params = og.GeneratorParams(model_txt)
-	params.set_search_options(max_length=chat.max, temperature=chat.temp,top_p=chat.top_p, top_k=chat.top_k, repetition_penalty=1.1)
+## for openvino
+async def process_stream(streamer, isStream=True):
+  print("streaming start...")
+  
+  sentence = ""
+  for new_token in streamer:
+    print(new_token, end="", flush=True)
 
-	generator = og.Generator(model_txt, params)
+    if isStream:
+      yield new_token
+      await asyncio.sleep(0) 
+    elif "." in new_token or "\n" in new_token:
+      sentence = sentence + new_token
+      if len(sentence) > 3:
+        yield sentence
+        await asyncio.sleep(0) 
+        sentence = ""
+    else:
+      sentence = sentence + new_token
 
-	print(prompt)
-	input_tokens = token_txt.encode(prompt)
-	generator.append_tokens(input_tokens)
-
-	return generator
-"""
 
 async def stream_response(chat, isStream=True):
-
   generator = process_stream(chat, isStream)
   sentence = ""
 
   while not generator.is_done():
     generator.generate_next_token()
     token = generator.get_next_tokens()[0]
-    new_token = tokenizer_stream.decode(token) 
+    new_token = token_txt.decode(token) 
+    print(new_token, end="", flush=True)
     if isStream:
       yield new_token
       await asyncio.sleep(0) 
@@ -259,13 +258,89 @@ def monitor():
 
 
 @app.post("/v1/txt2chat", summary="문장 기반의 chatgpt 스타일 구현 / batch ")
-def txt2chat(chat : Chat): # gen or med
+def txt2chat(chat : Chat, isThink=0): # gen or med
   print(chat)
+  """
+  token = pipe_txt.get_tokenizer()
+  streamer = IterableStreamer(token)
+
+  messages = [
+    {"role": "system", "content": chat.type},
+    {"role": "user", "content": chat.prompt}
+  ] 
+
+  think = False
+  if int(isThink) > 0:
+    think = True
+
+  prompt = token_txt.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True,
+    enable_thinking=think
+  )
+
+  generate_kwargs = dict(
+      inputs = prompt,
+      max_new_tokens=int(chat.max),
+      temperature=float(chat.temp), 
+      #do_sample=True,
+      repetition_penalty=1.1,
+      top_k=int(chat.top_k),
+      top_p=float(chat.top_p),
+      apply_chat_template=False,
+      streamer=streamer, # !do_sample || top_k > 0
+  )
+
+  t1 = Thread(target=pipe_txt.generate, kwargs=generate_kwargs)
+  t1.start()
+
+  out = process_stream(streamer, False)
+  return StreamingResponse(out, media_type="text/plain")
+  """
   return StreamingResponse(generate_text_stream(chat, False), media_type="text/plain")
 
 @app.post("/v2/txt2chat", summary="문장 기반의 chatgpt 스타일 구현 / stream")
-def txt2chat2(chat : Chat): # gen or med
+def txt2chat2(chat : Chat, isThink=0): # gen or med
   print(chat)
+  """
+  token = pipe_txt.get_tokenizer()
+  streamer = IterableStreamer(token, prompt = chat.prompt)
+
+  messages = [
+    {"role": "system", "content": chat.type},
+    {"role": "user", "content": chat.prompt}
+  ] 
+
+  think = False
+  if int(isThink) > 0:
+    think = True
+
+  prompt = token_txt.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True,
+    enable_thinking=think
+  )
+
+  generate_kwargs = dict(
+      inputs = prompt,
+      max_new_tokens=int(chat.max),
+      temperature=float(chat.temp),
+      #do_sample=True,
+      repetition_penalty=1.1,
+      top_k=int(chat.top_k),
+      top_p=float(chat.top_p),
+      apply_chat_template=False,
+      streamer=streamer, # !do_sample || top_k > 0
+  )
+
+  t1 = Thread(target=pipe_txt.generate, kwargs=generate_kwargs)
+  t1.start()
+
+  out = process_stream(streamer, True)
+  return StreamingResponse(out, media_type="text/plain")
+  """
   return StreamingResponse(generate_text_stream(chat, True), media_type="text/plain")
 
 

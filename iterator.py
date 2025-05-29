@@ -116,3 +116,50 @@ class IterableStreamer(StreamerBase):
             self.end()
 
         return stop_flag
+
+    def compute_decoded_length_for_position(self, cache_position: int):
+        # decode was performed for this position, skippping
+        if self.decoded_lengths[cache_position] != -2:
+            return
+
+        cache_for_position = self.tokens_cache[: cache_position + 1]
+        text_for_position = self.tokenizer.decode(cache_for_position)
+
+        if len(text_for_position) > 0 and text_for_position[-1] == chr(65533):
+            # Mark text as incomplete
+            self.decoded_lengths[cache_position] = -1
+        else:
+            self.decoded_lengths[cache_position] = len(text_for_position)
+
+    def end(self):
+        """
+        Flushes residual tokens from the buffer and puts a None value in the queue to signal the end.
+        """
+        text = self.tokenizer.decode(self.tokens_cache)
+        if len(text) > self.print_len:
+            word = text[self.print_len :]
+            self.write_word(word)
+            self.tokens_cache = []
+            self.print_len = 0
+        self.text_queue.put(None)
+
+
+class ChunkStreamer(IterableStreamer):
+
+    def __init__(self, tokenizer, tokens_len):
+        super().__init__(tokenizer)
+        self.tokens_len = tokens_len
+
+    def write(self, token: Union[int, list[int]]) -> StreamingStatus:
+        if (len(self.tokens_cache) + 1) % self.tokens_len == 0:
+            return super().write(token)
+
+        if type(token) is list:
+            self.tokens_cache += token
+            # -2 means no decode was done for this token position
+            self.decoded_lengths += [-2 for _ in range(len(token))]
+        else:
+            self.tokens_cache.append(token)
+            self.decoded_lengths.append(-2)
+
+        return StreamingStatus.RUNNING
