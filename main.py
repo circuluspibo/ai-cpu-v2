@@ -118,6 +118,20 @@ def trans_en2ko(prompt):
   return token_en2ko.decode(token_en2ko.convert_tokens_to_ids(target), skip_special_tokens=True)
 
 app = FastAPI()
+origins = [
+    "http://canvers.net",
+    "https://canvers.net",   
+    "http://www.canvers.net",
+    "https://www.canvers.net",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],#origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Generator(ov_genai.Generator):
     def __init__(self, seed, mu=0.0, sigma=1.0):
@@ -163,21 +177,6 @@ async def generate_text_stream(chat : Chat, isStream=True):
     if len(sentence) > 3:
        yield sentence
         #await asyncio.sleep(0.01)  # 비동기 처리를 위한 작은 딜레이
-
-origins = [
-    "http://canvers.net",
-    "https://canvers.net",   
-    "http://www.canvers.net",
-    "https://www.canvers.net",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],#origins,
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 def stream_en2ko(prompts):
   prompts = prompts.split('\n') #[:-1] for xgen patch
