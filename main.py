@@ -35,30 +35,29 @@ class Message(BaseModel):
     role: str  # 'user' 또는 'assistant'
     content: str
 
+class Chat(BaseModel):
+  prompt : str
+  lang : str = 'auto'
+  type : str = "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 로봇으로, 이모티콘도 활용해서 대화형식으로 대답하길 바래!"
+  history: List[Message]
+  rag :  str = ''  
+  temp : float = 0.6
+  top_p : float = 0.92
+  top_k : int = 20
+  max : int = 16384
+
 _IP = si.getIP()
 _PORT = int(open("port.txt", 'r').read())
 
 class Param (BaseModel):
   text : str
   hash : str = Field(default='')
-  history: List[Message]
   voice : str = Field(default='main') 
   lang : str = Field(default='ko')
   type : str = Field(default='mp3')
   pitch : str = Field(default='medium')
   rate : str = Field(default='medium')
   volume : str = Field(default='medium')
-
-
-class Chat(BaseModel):
-  prompt : str
-  lang : str = 'auto'
-  type : str = "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 로봇으로, 이모티콘도 활용해서 대화형식으로 대답하길 바래!"
-  rag :  str = ''  
-  temp : float = 0.5
-  top_p : float = 0.92
-  top_k : int = 50
-  max : int = 16384
 
 
 model_en2ko = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers-en2ko-ct2-v1"), device="cpu")
@@ -150,6 +149,9 @@ class Generator(ov_genai.Generator):
 
 async def generate_text_stream(chat : Chat, isStream=True):
 
+    if chat.rag is not None and len(chat.rag) > 10: 
+      chat.type=  f"{chat.type} 그리고, 다음 내용을 참고하여 대답을 하되 잘 모르는 내용이면 모른다고 솔직하게 대답하세요.\n<|context|>\n{chat.rag}"    
+
     chat_history = [{"role": "system","content": chat.type}]
   
     if hasattr(chat, "history") and isinstance(chat.history, list):
@@ -158,14 +160,11 @@ async def generate_text_stream(chat : Chat, isStream=True):
                 chat_history.append({"role": msg["role"],"content": msg["content"]})
 
     chat_history.append({ "role": "user","content": chat.prompt})
-
-    if chat.rag is not None and len(chat.rag) > 10: 
-      chat.type=  f"{chat.type} 그리고, 다음 내용을 참고하여 대답을 하되 잘 모르는 내용이면 모른다고 솔직하게 대답하세요.\n<|context|>\n{chat.rag}"    
-
     prompt = token_txt.apply_chat_template(chat_history, tokenize=False,add_generation_prompt=True)
 	
     response = model_txt.create_completion(prompt, max_tokens=chat.max, temperature=chat.temp, top_k=chat.top_k,top_p=chat.top_p,repeat_penalty=1.1, stream=True)
     sentence = ""
+
     for chunk in response:
         if "choices" in chunk and chunk["choices"]:
             new_token =  chunk["choices"][0]["text"]
