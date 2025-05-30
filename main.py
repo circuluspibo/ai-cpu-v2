@@ -31,6 +31,9 @@ from openvino import Core
 import asyncio
 from typing import List
 
+
+_MAX_LENGTH = 32768
+
 class Message(BaseModel):
     role: str  # 'user' 또는 'assistant'
     content: str
@@ -44,7 +47,7 @@ class Chat(BaseModel):
   temp : float = 0.6
   top_p : float = 0.92
   top_k : int = 20
-  max : int = 16384
+  max : int = _MAX_LENGTH
 
 _IP = si.getIP()
 _PORT = int(open("port.txt", 'r').read())
@@ -154,8 +157,8 @@ async def generate_text_stream(chat : Chat, isStream=True):
   
     if hasattr(chat, "history") and isinstance(chat.history, list):
         for msg in chat.history:
-            if isinstance(msg, dict) and "role" in msg and "content" in msg:
-                chat_history.append({"role": msg["role"],"content": msg["content"]})
+            if  isinstance(msg, Message):
+              chat_history.append(msg.dict())
 
     chat_history.append({ "role": "user","content": chat.prompt})
     print(chat_history)
