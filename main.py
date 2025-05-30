@@ -158,6 +158,8 @@ async def generate_text_stream(chat : Chat, isStream=True):
                 chat_history.append({"role": msg["role"],"content": msg["content"]})
 
     chat_history.append({ "role": "user","content": chat.prompt})
+    print(chat_history)
+
     prompt = token_txt.apply_chat_template(chat_history, tokenize=False,add_generation_prompt=True)
 	
     response = model_txt.create_completion(prompt, max_tokens=chat.max, temperature=chat.temp, top_k=chat.top_k,top_p=chat.top_p,repeat_penalty=1.1, stream=True)
@@ -267,7 +269,6 @@ def monitor():
 
 @app.post("/v1/txt2chat", summary="문장 기반의 chatgpt 스타일 구현 / batch ")
 def txt2chat(chat : Chat, isThink=0): # gen or med
-  print(chat)
   """
   token = pipe_txt.get_tokenizer()
   streamer = IterableStreamer(token)
@@ -310,7 +311,6 @@ def txt2chat(chat : Chat, isThink=0): # gen or med
 
 @app.post("/v2/txt2chat", summary="문장 기반의 chatgpt 스타일 구현 / stream")
 def txt2chat2(chat : Chat, isThink=0): # gen or med
-  print(chat)
   """
   token = pipe_txt.get_tokenizer()
   streamer = IterableStreamer(token, prompt = chat.prompt)
