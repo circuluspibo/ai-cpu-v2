@@ -29,6 +29,11 @@ from serverinfo import si
 from llama_cpp import Llama
 from openvino import Core
 import asyncio
+from typing import List
+
+class Message(BaseModel):
+    role: str  # 'user' 또는 'assistant'
+    content: str
 
 _IP = si.getIP()
 _PORT = int(open("port.txt", 'r').read())
@@ -36,6 +41,7 @@ _PORT = int(open("port.txt", 'r').read())
 class Param (BaseModel):
   text : str
   hash : str = Field(default='')
+  history: List[Message]
   voice : str = Field(default='main') 
   lang : str = Field(default='ko')
   type : str = Field(default='mp3')
@@ -62,10 +68,10 @@ model_ko2en = ctranslate2.Translator(snapshot_download(repo_id="circulus/canvers
 token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 
 #path_txt = snapshot_download(repo_id="circulus/Qwen3-1.7B-ko-ov-sym-int4")
-path_txt = "dnotitia/Smoothie-Qwen3-1.7B"
+#path_txt = "dnotitia/Smoothie-Qwen3-1.7B"
 #pipe_txt = ov_genai.LLMPipeline(path_txt, "CPU")
-model_txt = Llama.from_pretrained(repo_id="rippertnt/Smoothie-Qwen3-1.7B-Q4_K_M-GGUF", filename="smoothie-qwen3-1.7b-q4_k_m.gguf", n_threads=4, verbose=False)
-token_txt =  AutoTokenizer.from_pretrained(path_txt)
+#model_txt = Llama.from_pretrained(repo_id="rippertnt/Smoothie-Qwen3-1.7B-Q4_K_M-GGUF", filename="smoothie-qwen3-1.7b-q4_k_m.gguf", n_threads=4, verbose=False)
+#token_txt =  AutoTokenizer.from_pretrained(path_txt)
 
 #path_txt = "kakaocorp/kanana-1.5-2.1b-instruct-2505"
 #model_txt = Llama.from_pretrained(repo_id="JJS0321/kanana-1.5-2.1b-instruct-2505-gguf", filename="kanana-2.3B-1.5-Q4_K_M.gguf", n_threads=4, verbose=False)
@@ -77,10 +83,9 @@ token_txt =  AutoTokenizer.from_pretrained(path_txt)
 #model_txt = Llama.from_pretrained(repo_id="unsloth/gemma-3-1b-it-GGUF", filename="gemma-3-1b-it-Q4_K_M.gguf", n_threads=4, verbose=False)
 #token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-1b-it")
 
-#model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
-#token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
+model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, verbose=False)
+token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
 
-# n_gpu_layers=-1,
 
 model_real = snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
 pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
@@ -144,16 +149,20 @@ class Generator(ov_genai.Generator):
         return np.random.normal(self.mu, self.sigma)
 
 async def generate_text_stream(chat : Chat, isStream=True):
-    
-    #if len(chat.rag) > 3:
-    #  chat.prompt = "<content>\n" + chat.rag + "\n\n" + chat.prompt
+
+    chat_history = [{"role": "system","content": chat.type}]
+  
+    if hasattr(chat, "history") and isinstance(chat.history, list):
+        for msg in chat.history:
+            if isinstance(msg, dict) and "role" in msg and "content" in msg:
+                chat_history.append({"role": msg["role"],"content": msg["content"]})
+
+    chat_history.append({ "role": "user","content": chat.prompt})
+
     if chat.rag is not None and len(chat.rag) > 10: 
       chat.type=  f"{chat.type} 그리고, 다음 내용을 참고하여 대답을 하되 잘 모르는 내용이면 모른다고 솔직하게 대답하세요.\n<|context|>\n{chat.rag}"    
 
-    prompt = token_txt.apply_chat_template([
-      {"role": "system", "content": chat.type},
-      {"role": "user", "content": chat.prompt}
-    ], tokenize=False,add_generation_prompt=True)
+    prompt = token_txt.apply_chat_template(chat_history, tokenize=False,add_generation_prompt=True)
 	
     response = model_txt.create_completion(prompt, max_tokens=chat.max, temperature=chat.temp, top_k=chat.top_k,top_p=chat.top_p,repeat_penalty=1.1, stream=True)
     sentence = ""
