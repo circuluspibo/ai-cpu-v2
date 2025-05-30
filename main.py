@@ -107,8 +107,6 @@ path_tts = snapshot_download(repo_id="rippertnt/on-vits2-multi-tts-v1", allow_pa
 pipe_tts = core.compile_model(core.read_model(model=f"{path_tts}/all_base_ov.xml"), device_name="CPU", config=config)
 conf_tts = utils.get_hparams_from_file(hf_hub_download(repo_id="rippertnt/on-vits2-multi-tts-v1", filename="all_base.json"))
 
-
-
 def trans_ko2en(prompt):
   source = token_ko2en.convert_ids_to_tokens(token_ko2en.encode(prompt))
   results = model_ko2en.translate_batch([source])
@@ -427,7 +425,8 @@ def tts(text = "", voice = 1, lang='ko', static=0):
     start = t.time()
     print(text, static)
 
-    phoneme_ids = text_to_sequence(text, conf_tts.data.text_cleaners)
+    #phoneme_ids = text_to_sequence(text, conf_tts.data.text_cleaners)
+    phoneme_ids = text_to_sequence(text, [f'canvers_{lang}_cleaners'])
     text = np.expand_dims(np.array(phoneme_ids, dtype=np.int64), 0)
 
     inputs = {
