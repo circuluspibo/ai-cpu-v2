@@ -85,7 +85,7 @@ token_ko2en = AutoTokenizer.from_pretrained("circulus/canvers-ko2en-v1")
 #model_txt = Llama.from_pretrained(repo_id="unsloth/gemma-3-1b-it-GGUF", filename="gemma-3-1b-it-Q4_K_M.gguf", n_threads=4, verbose=False)
 #token_txt = AutoTokenizer.from_pretrained("unsloth/gemma-3-1b-it")
 
-model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, n_ctx=8192, verbose=False)
+model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF", filename="hyperclovax-seed-text-instruct-1.5b-q4_k_m.gguf", n_threads=4, n_ctx=4096, verbose=False)
 token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
 
 
