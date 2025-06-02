@@ -89,14 +89,14 @@ model_txt = Llama.from_pretrained(repo_id="rippertnt/HyperCLOVAX-SEED-Text-Instr
 token_txt = AutoTokenizer.from_pretrained("rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF")
 
 
-model_real = snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
-pipe_real = ov_genai.Text2ImagePipeline(model_real, device="CPU")
+model_real = None # snapshot_download(repo_id="circulus/on-canvers-real-v3.9.1-int8")
+pipe_real = None # = ov_genai.Text2ImagePipeline(model_real, device="CPU")
 
-model_story = snapshot_download(repo_id="circulus/on-canvers-story-v3.9.1-int8")
-pipe_story = ov_genai.Text2ImagePipeline(model_story, device="CPU")
+model_story = None # = snapshot_download(repo_id="circulus/on-canvers-story-v3.9.1-int8")
+pipe_story = None # = ov_genai.Text2ImagePipeline(model_story, device="CPU")
 
-model_disney = snapshot_download(repo_id="circulus/on-canvers-disney-v3.9.1-int8")
-pipe_disney = ov_genai.Text2ImagePipeline(model_disney, device="CPU")
+model_disney = None # = snapshot_download(repo_id="circulus/on-canvers-disney-v3.9.1-int8")
+pipe_disney = None # = ov_genai.Text2ImagePipeline(model_disney, device="CPU")
 
 model_stt = snapshot_download(repo_id="circulus/whisper-large-v3-turbo-ov-int4")
 pipe_stt = ov_genai.WhisperPipeline(model_stt,device="CPU")
