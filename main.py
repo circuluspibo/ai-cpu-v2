@@ -42,7 +42,7 @@ class Chat(BaseModel):
   prompt : str
   lang : str = 'auto'
   type : str = "당신은 서큘러스에서 만든 다윗 이라고 하는 10살 남자아이 성향의 유쾌한 로봇으로, 이모티콘도 활용해서 대화형식으로 대답하길 바래!"
-  history: List[Message]
+  history: List[Message] = Field(default_factory=list)
   rag :  str = ''  
   temp : float = 0.6
   top_p : float = 0.92
